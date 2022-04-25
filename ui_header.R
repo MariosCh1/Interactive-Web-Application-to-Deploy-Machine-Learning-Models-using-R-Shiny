@@ -1,0 +1,1 @@
+header <- dashboardHeader(title = "My Dashboard", userOutput("user"))
