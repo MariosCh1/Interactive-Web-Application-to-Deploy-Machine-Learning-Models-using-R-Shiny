@@ -1,4 +1,4 @@
-sidebar <- dashboardSidebar(
+sidebar <- shinydashboardPlus::dashboardSidebar(
 sidebarMenu(
   
   id = "sidebar_menu",

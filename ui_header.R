@@ -1,1 +1,1 @@
-header <- dashboardHeader(title = "My Dashboard", userOutput("user"))
+header <- shinydashboardPlus::dashboardHeader(title = "My Dashboard", userOutput("user"))

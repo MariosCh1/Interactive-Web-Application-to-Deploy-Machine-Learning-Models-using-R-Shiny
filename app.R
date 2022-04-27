@@ -56,30 +56,31 @@ if (interactive()) {
     values <- reactiveValues()
     #values$stored_files <- NULL
     
-    #---------User Auth----------------------------------------------------
-    output$user <- renderUser({
+    #---------User Auth---------------------------------------------------------
+    
+    
+    dUser <- shinydashboardPlus::dashboardUser(
+      name = session$userData$auth0_info$name,
+      image = session$userData$auth0_info$picture,
+      title = session$userData$auth0_info$nickname,
+      footer = p(logoutButton(), class = "text-center")
+    )
+    
+    
+    output$user <- renderUser(
       if (!(session$userData$auth0_info$sub %in% send_api$user_id)) {
-        saveUsertoDB(session$userData$auth0_info)
         
-        dashboardUser(
-          name = session$userData$auth0_info$name,
-          image = session$userData$auth0_info$picture,
-          title = session$userData$auth0_info$nickname,
-          footer = p(logoutButton(), class = "text-center")
-          
-        )
+        saveUsertoDB(session$userData$auth0_info)
+        dUser
         
       } else{
-        dashboardUser(
-          name = session$userData$auth0_info$name,
-          image = session$userData$auth0_info$picture,
-          title = session$userData$auth0_info$nickname,
-          footer = p(logoutButton(), class = "text-center")
-          
-        )
+
+        dUser
         
       }
-    })
+    )
+    
+
     
     #--------Upload Manager-----------------------------------------------------
     dataset <- function(x) {
@@ -720,6 +721,6 @@ if (interactive()) {
   a0_server <- auth0_server(server , info = a0_info)
   
   # Run the application
-  runApp(shinyApp(ui = a0_ui, server = a0_server), launch.browser = TRUE)
+  shiny::runApp(shinyApp(ui = a0_ui, server = a0_server), launch.browser = TRUE)
   
 }
