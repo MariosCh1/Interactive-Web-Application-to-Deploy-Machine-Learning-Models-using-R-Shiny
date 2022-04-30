@@ -8,7 +8,7 @@ sidebarMenu(
     tabName = "data_manager",
     icon = icon("database"),
     menuSubItem("File Uploader", tabName = "upload_files"),
-    menuSubItem("Storage/Data Transformation", tabName = "dataset_storage")
+    menuSubItem("Storage", tabName = "dataset_storage")
   ),
   
   menuItem(

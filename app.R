@@ -63,7 +63,19 @@ if (interactive()) {
       name = session$userData$auth0_info$name,
       image = session$userData$auth0_info$picture,
       title = session$userData$auth0_info$nickname,
-      footer = p(logoutButton(), class = "text-center")
+      footer = p(logoutButton(), class = "text-center"),
+      tags$style(
+        HTML(
+          ".navbar-nav>.user-menu>.dropdown-menu>li.user-header>img {
+          height: 80px;
+          width: 80px;
+          }
+          
+          .navbar-nav>.user-menu>.dropdown-menu>li.user-header>p {
+          font-size: 12px;
+          }"
+        )
+      )
     )
     
     
