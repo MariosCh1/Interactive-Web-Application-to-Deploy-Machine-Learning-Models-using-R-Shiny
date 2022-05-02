@@ -41,7 +41,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             actionButton("Save_to_DB", "Save Columns to DB")
             
-            )
+            ), width = 3
           
         ),
         
@@ -52,7 +52,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
             uiOutput("dataset_tabs_upload")
             
-          )
+          ), width = 9
           
         )
         
@@ -83,7 +83,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             actionButton("dataset_delete", "Delete")
           
-          )
+          ), width = 3
           
         ),
         
@@ -94,7 +94,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
             uiOutput("dataset_preview")
             
-          )
+          ), width = 9
           
         )
         
@@ -171,7 +171,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                       label = "D. Select variables' type for correlation",
                                       choices = c("all", "discrete", "continuous"))
 
-          )
+          ), width = 3
 
         ),
 
@@ -185,12 +185,46 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             
 
-          )
+          ), width = 9
 
         )
 
       )
 
+    ),
+    
+    #------------Storage--------------------------------------------------------
+    
+    shinydashboard::tabItem(
+      
+      
+      tabName = "Prediction",
+      titlePanel("Prediction Model"),
+      
+      # Sidebar Datasets
+      sidebarLayout(
+        
+        sidebarPanel(
+          
+          fluidPage(
+            
+            
+          ), width = 3
+          
+        ),
+        
+        # Main panel
+        mainPanel(
+          
+          fluidPage(
+            
+            
+          ), width = 9
+          
+        )
+        
+      )
+      
     )
     
   )

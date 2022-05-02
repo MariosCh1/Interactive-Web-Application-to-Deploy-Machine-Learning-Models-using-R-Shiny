@@ -16,6 +16,14 @@ sidebarMenu(
     tabName = "EDA",
     icon = icon("chart-area")
     
+  ),
+  
+  
+  menuItem(
+    "Prediction Model",
+    tabName = "Prediction",
+    icon = icon("dashboard")
+    
   )
   
 ))

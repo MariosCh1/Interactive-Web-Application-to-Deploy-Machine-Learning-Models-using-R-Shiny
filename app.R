@@ -8,8 +8,8 @@
 #
 
 set.seed(100)
-options(shiny.port = 8080,
-        shiny.maxRequestSize = 40 * 1024 ^ 2)
+options(shiny.port = 8080 #, shiny.maxRequestSize = 40 * 1024 ^ 2
+        )
 
 
 
