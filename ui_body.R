@@ -16,7 +16,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         sidebarPanel(
           
-          fluidPage(
+          #fluidPage(
           
             fileInput(
               
@@ -41,18 +41,20 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             actionButton("Save_to_DB", "Save Columns to DB")
             
-            ), width = 3
+            #)
+            , width = 3
           
         ),
         
         # Main panel
         mainPanel(
           
-          fluidPage(
+          #fluidPage(
 
             uiOutput("dataset_tabs_upload")
             
-          ), width = 9
+          #)
+          , width = 9
           
         )
         
@@ -73,7 +75,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         sidebarPanel(
           
-          fluidPage(
+          #fluidPage(
 
             DT::dataTableOutput("Storage_DB"),
             
@@ -83,18 +85,21 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             actionButton("dataset_delete", "Delete")
           
-          ), width = 3
+          #)
+          
+          , width = 3
           
         ),
         
         # Main panel
         mainPanel(
           
-          fluidPage(
+          #fluidPage(
 
             uiOutput("dataset_preview")
             
-          ), width = 9
+          #)
+          , width = 9
           
         )
         
@@ -114,7 +119,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
         sidebarPanel(
 
-          fluidPage(
+          #fluidPage(
 
             
             shinyWidgets::checkboxGroupButtons("plot_types",
@@ -171,13 +176,14 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                       label = "D. Select variables' type for correlation",
                                       choices = c("all", "discrete", "continuous"))
 
-          ), width = 3
+          #)
+        , width = 3
 
         ),
 
         mainPanel(
 
-          fluidPage(
+          #fluidPage(
             #<div class="user-select-none svg-container" style="position: relative; width: 788px; height: 400px;">
             
             
@@ -185,7 +191,9 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             
 
-          ), width = 9
+         #)
+          
+          , width = 9
 
         )
 
@@ -193,38 +201,39 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
     ),
     
-    #------------Storage--------------------------------------------------------
+    #---------Prediction Model--------------------------------------------------
     
     shinydashboard::tabItem(
       
-      
       tabName = "Prediction",
       titlePanel("Prediction Model"),
-      
-      # Sidebar Datasets
-      sidebarLayout(
+                            
+      # Main panel
+      mainPanel(
         
-        sidebarPanel(
+        #fluidPage(
           
-          fluidPage(
-            
-            
-          ), width = 3
-          
-        ),
+          #fixedPage(
         
-        # Main panel
-        mainPanel(
-          
-          fluidPage(
+            glide(
+              
+              id="PredictionGLide",
+              
+              height = "350px",
             
+              screen(), 
+              
+              screen()
             
-          ), width = 9
+            )
           
-        )
+         #)
+          
+        #)
+        
+        , width = 12
         
       )
-      
     )
     
   )

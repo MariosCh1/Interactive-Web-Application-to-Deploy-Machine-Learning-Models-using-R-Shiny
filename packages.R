@@ -126,6 +126,10 @@ if(!("plotly" %in% rownames(installed.packages()))){
 if(!("plyr" %in% rownames(installed.packages()))){
   install.packages("plyr")
 }
+
+if(!("shinyglide" %in% rownames(installed.packages()))){
+install.packages("shinyglide")
+}
 # 
 # if(!("remotes" %in% rownames(installed.packages()))){
 #   install.packages("remotes")
@@ -213,5 +217,6 @@ library(hablar)
 library(ggplot2)
 library(plotly)
 library(plyr)
+library(shinyglide)
 # library(remotes)
 # library(scroller)

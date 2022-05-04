@@ -147,7 +147,8 @@ if (interactive()) {
                  DT::renderDataTable({
                    dataset(x)[, input$show_vars, drop = FALSE]
                  },
-                 options = list(scrollX = TRUE)))
+                 options = list(scrollX = TRUE,
+                                pageLength = 12)))
         
         
       }
@@ -300,6 +301,7 @@ if (interactive()) {
         selection = 'single' ,
         options = list(
           #scrollX = TRUE,
+          pageLength = 12,
           scrollY = "200px",
           paging = FALSE,
           dom = 't'
@@ -376,7 +378,8 @@ if (interactive()) {
           DT::renderDataTable(
             values$selected_file_from_DB,
             #editable = "all",
-            options = list(scrollX = TRUE)
+            options = list(scrollX = TRUE,
+                           pageLength = 12)
           )
         }
         
@@ -605,7 +608,7 @@ if (interactive()) {
       create_tabs <- function(x) {
         
         shiny::tabPanel(x, {
-          wellPanel(style = "overflow-y:scroll; height:600px", {
+          wellPanel(style = "overflow-y:scroll; height:590px", {
           if (x == "Dimension") {
             
               radialNetwork({
@@ -727,6 +730,9 @@ if (interactive()) {
       
     })
     
+    #---------Prediction Model--------------------------------------------------
+    
+
     
   }
   
