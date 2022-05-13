@@ -183,16 +183,8 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
         mainPanel(
 
-          #fluidPage(
-            #<div class="user-select-none svg-container" style="position: relative; width: 788px; height: 400px;">
-            
-            
             htmlOutput("plot_tabs")
-            
-            
 
-         #)
-          
           , width = 9
 
         )
@@ -211,25 +203,38 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
       # Main panel
       mainPanel(
         
-        #fluidPage(
+        fluidPage(
           
-          #fixedPage(
+          align = "center",
         
             glide(
               
               id="PredictionGLide",
               
-              height = "350px",
+              height = "560px",
             
-              screen(), 
+              screen(
+                h3("Let's Start"),
+                br(),
+                shinyWidgets::pickerInput("select_train_dataset",
+                                          label = "Please choose the train dataset from storage list:",
+                                          choices = NULL,
+                                          multiple = FALSE),
+                p("Now, kindly select the percentage:")
+                
+              ), 
               
-              screen()
+              screen(
+                h3("Second screen")
+              ),
+              
+              screen(
+                h3("Third screen")
+              )
             
             )
           
-         #)
-          
-        #)
+        )
         
         , width = 12
         
