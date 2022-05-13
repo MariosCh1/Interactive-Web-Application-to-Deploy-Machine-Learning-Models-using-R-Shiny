@@ -205,40 +205,52 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         fluidPage(
           
-          align = "center",
-        
-            glide(
-              
-              id="PredictionGLide",
-              
-              height = "560px",
+        align = "center",
             
+          glide(
+              
+            id="PredictionGLide",
+              
+            height = "560px",
+              
               screen(
-                h3("Let's Start"),
+                  
+                br(),
+                h2("Let's Start!"),
+                br(),
+                h3("Step 1: Dataset & Partitions"),
+                next_label = 'Next: Step 2',
+                br(),
                 br(),
                 shinyWidgets::pickerInput("select_train_dataset",
-                                          label = "Please choose the train dataset from storage list:",
+                                          label = "A. Please choose the train dataset from storage list:",
                                           choices = NULL,
                                           multiple = FALSE),
-                p("Now, kindly select the percentage:")
-                
-              ), 
+                br(),
+                br(),
+                sliderInput("select_data_partition", label = "B. Please select the percentage of train dataset partition:", min = 70, max = 100, value = 80, post = "%")
+                  
+                  
+                ), 
               
-              screen(
-                h3("Second screen")
-              ),
+                screen(
+                  h3("Second screen")
+                ),
               
-              screen(
-                h3("Third screen")
-              )
+                screen(
+                  h3("Third screen")
+                )
             
             )
-          
-        )
         
-        , width = 12
+          
+          
+        ), width = 12
+      
+      
         
       )
+    
     )
     
   )
