@@ -182,7 +182,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         ),
 
         mainPanel(
-
+          
             htmlOutput("plot_tabs")
 
           , width = 9
@@ -217,6 +217,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                   
                 br(),
                 h2("Let's Start!"),
+                br(),
                 br(),
                 h3("Step 1: Dataset & Partitions"),
                 next_label = 'Next: Step 2',

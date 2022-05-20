@@ -631,8 +631,13 @@ if (interactive()) {
           } else if (x == "Histogram - Continuous") {
 
               renderPlotly({
+                Hist <-
                 DataExplorer::plot_histogram(values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
-                                             ncol = 2L) %>% subplot() %>% ggplotly() %>% layout(height = '560')
+                                             nrow = 1L,
+                                             ncol = 2L) 
+                
+                subplot(Hist, nrows = length(Hist), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Hist) * 590))
+                
               })
               
             
@@ -640,8 +645,14 @@ if (interactive()) {
           } else if (x == "Density") {
      
               renderPlotly({
+                Density <-
                 DataExplorer::plot_density(values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
-                                           ncol = 2L) %>% subplot() %>% ggplotly() %>% layout(height = '560')
+                                           nrow = 1L,
+                                           ncol = 2L)
+                
+                subplot(Density, nrows = length(Density), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Density) * 590))
+                
+                
               })
             
           } else if (x == "Multivariate Analysis") {
@@ -655,48 +666,65 @@ if (interactive()) {
               })
             
           } else if (x == "Barplots - Categorical") {
-    
-              renderPlotly({
+              
+            renderPlotly({
+              Barplot <-
                 DataExplorer::plot_bar(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_discrete],
                   #with = ,
                   by = input$selected_vars_EDA_grouped_discrete,
+                  nrow = 1L,
                   ncol = 2L
-                ) %>% subplot() %>% ggplotly() %>% layout(height = '560')
+                ) 
+                  
+                  subplot(Barplot, nrows = length(Barplot), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Barplot) * 590))
+                  
                 
               })
             
           } else if (x == "Q-Q Plot") {
           
-              renderPlotly({
+            renderPlotly({
+              QQ <-
                 DataExplorer::plot_qq(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
                   by = input$selected_vars_EDA_grouped_continuous,
+                  nrow = 1L,
                   ncol = 2L
-                ) %>% subplot() %>% ggplotly() %>% layout(height = '600')
+                ) 
                 
+                subplot(QQ, nrows = length(QQ), margin = 0.02) %>% ggplotly() %>% layout(height = (length(QQ) * 590))
                 
               })
             
           } else if (x == "Box Plots") {
             
-              renderPlotly({
+            renderPlotly({
+              Box <-
                 DataExplorer::plot_boxplot(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
                   by = input$selected_vars_EDA_grouped_continuous,
+                  nrow = 1L,
                   ncol = 2L
-                ) %>% subplot() %>% ggplotly() %>% layout(height = '560')
+                ) 
+                
+                subplot(Box, nrows = length(Box), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Box) * 590))
+                
                 
               })
             
           } else if (x == "Scatter Plots") {
             
               renderPlotly({
-                DataExplorer::plot_scatterplot(
+                Scatter <- 
+                  DataExplorer::plot_scatterplot(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
                   by = input$selected_vars_EDA_grouped_continuous,
+                  nrow = 1L,
                   ncol = 2L
-                ) %>% subplot() %>% ggplotly() %>% layout(height = '560')
+                ) 
+                
+                subplot(Scatter, nrows = length(Scatter), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Scatter) * 590))
                 
               })
             
@@ -710,7 +738,7 @@ if (interactive()) {
                     ncol = 2L
                   )
                 
-                subplot(PCA, nrows = length(PCA), margin = 0.05) %>% layout(height = (length(PCA) * 560))
+                subplot(PCA, nrows = length(PCA), margin = 0.02) %>% ggplotly() %>% layout(height = (length(PCA) * 590))
                 
                 
             
