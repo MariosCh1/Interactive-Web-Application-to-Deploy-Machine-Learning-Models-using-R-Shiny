@@ -20,9 +20,11 @@ sidebarMenu(
   
   
   menuItem(
-    "Prediction Model",
+    "ML Prediction Modeling",
     tabName = "Prediction",
-    icon = icon("dashboard")
+    icon = icon("dashboard"),
+    menuSubItem("Supervised Learning", tabName = "supervised"),
+    menuSubItem("Unsupervised Learning", tabName = "unsupervised")
     
   )
   

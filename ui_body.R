@@ -197,8 +197,8 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
     
     shinydashboard::tabItem(
       
-      tabName = "Prediction",
-      titlePanel("Prediction Model"),
+      tabName = "supervised",
+      titlePanel("Supervised Learning"),
                             
       # Main panel
       mainPanel(
@@ -252,6 +252,23 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
       )
     
+    ),
+    
+    shinydashboard::tabItem(
+      
+      tabName = "unsupervised",
+      titlePanel("Unsupervised Learning"),
+      mainPanel(        
+        
+        fluidPage(
+        
+        align = "center",
+        
+        #glide()
+        
+        ),width=12)
+      
+      
     )
     
   )
