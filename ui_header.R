@@ -1,1 +1,1 @@
-header <- shinydashboardPlus::dashboardHeader(title = tags$a(tags$img(src = "logo.png"), align = "center"), userOutput("user"))
+header <- shinydashboardPlus::dashboardHeader(title = img(src='logo.png'), userOutput("user"))
