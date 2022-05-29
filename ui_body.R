@@ -16,7 +16,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         sidebarPanel(
           
-          #fluidPage(
+          fluidPage(
           
             fileInput(
               
@@ -39,9 +39,9 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             #useShinyalert(),
             
-            actionButton("Save_to_DB", "Save Columns to DB")
+            actionButton("Save_to_DB", "Save")
             
-            #)
+            )
             , width = 3
           
         ),
@@ -75,7 +75,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         sidebarPanel(
           
-          #fluidPage(
+          fluidPage(
 
             DT::dataTableOutput("Storage_DB"),
             
@@ -85,7 +85,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             actionButton("dataset_delete", "Delete")
           
-          #)
+          )
           
           , width = 3
           
@@ -94,11 +94,11 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         # Main panel
         mainPanel(
           
-          #fluidPage(
+          fluidPage(
 
             uiOutput("dataset_preview")
             
-          #)
+          )
           , width = 9
           
         )
@@ -119,7 +119,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
         sidebarPanel(
 
-          #fluidPage(
+          fluidPage(
 
             
             shinyWidgets::checkboxGroupButtons("plot_types",
@@ -176,7 +176,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                       label = "D. Select variables' type for correlation",
                                       choices = c("all", "discrete", "continuous"))
 
-          #)
+          )
         , width = 3
 
         ),
@@ -209,18 +209,18 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
           glide(
               
-            id="PredictionGLide",
+            id="SupPredictionGLide",
               
             height = "560px",
               
               screen(
                   
                 br(),
-                h2("Let's Start!"),
+                h2("Step 1: Dataset & Partitions"),
                 br(),
                 br(),
-                h3("Step 1: Dataset & Partitions"),
-                next_label = 'Next: Step 2',
+                h3("Let's Start!"),
+                next_label = paste("Next: Step 2 ", shiny::icon("chevron-right", lib = "glyphicon")),
                 br(),
                 br(),
                 shinyWidgets::pickerInput("select_train_dataset",
@@ -235,7 +235,26 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 ), 
               
                 screen(
-                  h3("Second screen")
+                  
+                  br(),
+                  h2("Step 2: Independed & Depended Variables"),
+                  br(),
+                  br(),
+                  h3("Now, we define the model's components..."),
+                  next_label = paste("Next: Step 3 ", shiny::icon("chevron-right", lib = "glyphicon")),
+                  br(),
+                  br(),
+                  shinyWidgets::pickerInput("select_depedent_variable",
+                                            label = "C. Select the Depended Variable that you would like to predict:",
+                                            choices = NULL,
+                                            multiple = FALSE),
+                  br(),
+                  br(),
+                  shinyWidgets::pickerInput("select_indepedent_variables",
+                                            label = "D. Please choose the Independed Variables:",
+                                            choices = NULL,
+                                            multiple = TRUE)
+
                 ),
               
                 screen(

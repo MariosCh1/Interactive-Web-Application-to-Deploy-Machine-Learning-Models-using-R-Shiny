@@ -37,6 +37,9 @@ source("packages.R")
 
 source("db_queries.R")
 
+#----------FUNCTIONS------------------------------------------------------------
+
+source("functions.R")
 
 ## Only run examples in interactive R sessions
 if (interactive()) {
@@ -281,6 +284,7 @@ if (interactive()) {
     reactiveDBContent <-
       eventReactive(input$sidebar_menu == "dataset_storage" |
                       input$sidebar_menu == "EDA" |
+                      input$sidebar_menu == "supervised" |
                       values$shinyAlert_respones == TRUE,
                     {
                       shinyjs::disable("dataset_delete")
@@ -759,6 +763,78 @@ if (interactive()) {
     })
     
     #---------Prediction Model--------------------------------------------------
+    
+    
+    observeEvent(input$sidebar_menu, {
+      if (input$sidebar_menu == "supervised") {
+        
+        shinyWidgets::updatePickerInput(
+          session,
+          "select_train_dataset",
+          choices = reactiveDBContent(),
+          options = pickerOptions(
+            actionsBox = TRUE,
+            liveSearch = TRUE,
+            size = 10
+          )
+        )
+
+      }
+      
+    })
+    
+    observe({
+      
+      req(input$select_train_dataset)
+      req(input$select_data_partition)
+      
+      values$train_dataset <-
+        getSelectedBlobFile(session$userData$auth0_info$sub,
+                            input$select_train_dataset)
+
+      values$train_indexes <- createDataPartition(values$train_dataset$ID, 
+                                                  p = (input$select_data_partition/100), 
+                                                  list = FALSE)
+      
+      
+      values$train_partition <- values$train_dataset[values$train_indexes, ]
+      values$test_partition <- values$train_dataset[-values$train_indexes, ]
+      
+
+      
+      shinyWidgets::updatePickerInput(
+        session,
+        "select_depedent_variable",
+        label = "B. Select the Depended Variable that you would like to predict:",
+        choices = colnames(removecolumn(values$train_dataset,"ID")),
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10
+        )
+      )
+      
+      
+      
+    })
+    
+    observeEvent(input$select_depedent_variable,{
+    
+      shinyWidgets::updatePickerInput(
+        session,
+        "select_indepedent_variables",
+        label = "D. Select the Independed Variables:",
+        choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_depedent_variable))),
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10
+        )
+      )
+      
+      
+    })
+    
     
 
     
