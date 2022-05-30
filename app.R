@@ -792,7 +792,7 @@ if (interactive()) {
         getSelectedBlobFile(session$userData$auth0_info$sub,
                             input$select_train_dataset)
 
-      values$train_indexes <- createDataPartition(values$train_dataset$ID, 
+      values$train_indexes <- createDataPartition(seq.int(nrow(values$train_dataset)), 
                                                   p = (input$select_data_partition/100), 
                                                   list = FALSE)
       
@@ -802,29 +802,31 @@ if (interactive()) {
       
 
       
-      shinyWidgets::updatePickerInput(
-        session,
-        "select_depedent_variable",
-        label = "B. Select the Depended Variable that you would like to predict:",
-        choices = colnames(removecolumn(values$train_dataset,"ID")),
-        options = pickerOptions(
-          actionsBox = TRUE,
-          liveSearch = TRUE,
-          size = 10
+      
+        shinyWidgets::updatePickerInput(
+          session,
+          "select_dependent_variable",
+          label = "B. Select the Depended Variable that you would like to predict:",
+          choices = colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset,"ID")}else{values$train_dataset}),
+          options = pickerOptions(
+            actionsBox = TRUE,
+            liveSearch = TRUE,
+            size = 10
+          )
         )
-      )
+        
       
       
       
     })
     
-    observeEvent(input$select_depedent_variable,{
+    observeEvent(input$select_dependent_variable,{
     
       shinyWidgets::updatePickerInput(
         session,
-        "select_indepedent_variables",
+        "select_independent_variables",
         label = "D. Select the Independed Variables:",
-        choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_depedent_variable))),
+        choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_dependent_variable))),
         options = pickerOptions(
           actionsBox = TRUE,
           liveSearch = TRUE,
