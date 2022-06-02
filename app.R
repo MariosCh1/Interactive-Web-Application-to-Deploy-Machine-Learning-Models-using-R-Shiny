@@ -838,7 +838,30 @@ if (interactive()) {
     })
     
     
-
+    observeEvent(input$checkbox_regression_choice , {
+      if (input$checkbox_regression_choice == TRUE &&
+          input$checkbox_classification_choice == TRUE) {
+        shinyWidgets::updatePickerInput(session,
+                                        "checkbox_classification_choice",
+                                        label = "I would like to get a amount as prediction",
+                                        selected = FALSE
+        )
+      }
+      
+    })
+    
+    
+    
+    observeEvent(input$checkbox_classification_choice, {
+      if (input$checkbox_regression_choice == TRUE &&
+          input$checkbox_classification_choice == TRUE) {
+        shinyWidgets::updatePickerInput(session,
+                                        "checkbox_regression_choice",
+                                        label = "I would like to get a amount as prediction",
+                                        selected = FALSE)
+      }
+      
+    })
     
   }
   

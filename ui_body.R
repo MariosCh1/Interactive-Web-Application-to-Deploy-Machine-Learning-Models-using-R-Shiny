@@ -258,8 +258,34 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 ),
               
                 screen(
-                  h3("Third screen")
-                )
+                  
+                  br(),
+                  h2("Step 3: Prediction Type - Regression or Classification"),
+                  br(),
+                  br(),
+                  h3("One step closer, please choose the type of prediction..."),
+                  next_label = paste("Next: Step 4 ", shiny::icon("chevron-right", lib = "glyphicon")),
+                  br(),
+                  br(),
+                  box(title="Regression", 
+                      #p("This is content. The background color is set to light-blue"),
+                      br(),
+                      img(src = ""),
+                      footer=shinyWidgets::awesomeCheckbox("checkbox_regression_choice", label = "I would like get a amount as prediction")),
+                  box(title="Classification",
+                      #p("This is content. The background color is set to light-blue"),
+                      br(),
+                      img(src = ""),
+                      footer=shinyWidgets::awesomeCheckbox("checkbox_classification_choice", label = "I would like get a class like yes/no as prediction")),
+                  br(),
+                  br(),
+                  br()
+
+                  
+                ),
+            
+                screen(br(),
+                       h2("Step 4"))
             
             )
         
