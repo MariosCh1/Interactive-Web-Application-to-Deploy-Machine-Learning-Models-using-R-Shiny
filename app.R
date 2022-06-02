@@ -843,7 +843,6 @@ if (interactive()) {
           input$checkbox_classification_choice == TRUE) {
         shinyWidgets::updatePickerInput(session,
                                         "checkbox_classification_choice",
-                                        label = "I would like to get a amount as prediction",
                                         selected = FALSE
         )
       }
@@ -857,7 +856,6 @@ if (interactive()) {
           input$checkbox_classification_choice == TRUE) {
         shinyWidgets::updatePickerInput(session,
                                         "checkbox_regression_choice",
-                                        label = "I would like to get a amount as prediction",
                                         selected = FALSE)
       }
       

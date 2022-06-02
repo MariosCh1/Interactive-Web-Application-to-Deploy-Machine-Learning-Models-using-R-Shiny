@@ -211,7 +211,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
               
             id="SupPredictionGLide",
               
-            height = "560px",
+            #height = "560px",
               
               screen(
                   
@@ -220,7 +220,6 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 br(),
                 br(),
                 h3("Let's Start!"),
-                next_label = paste("Next: Step 2 ", shiny::icon("chevron-right", lib = "glyphicon")),
                 br(),
                 br(),
                 shinyWidgets::pickerInput("select_train_dataset",
@@ -229,7 +228,8 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                           multiple = FALSE),
                 br(),
                 br(),
-                sliderInput("select_data_partition", label = "B. Please select the percentage of train dataset partition:", min = 70, max = 100, value = 80, post = "%")
+                sliderInput("select_data_partition", label = "B. Please select the percentage of train dataset partition:", min = 70, max = 100, value = 80, post = "%"),
+                next_label = paste("Next: Step 2 ", shiny::icon("chevron-right", lib = "glyphicon"))
                   
                   
                 ), 
@@ -241,7 +241,6 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                   br(),
                   br(),
                   h3("Now, we define the model's components..."),
-                  next_label = paste("Next: Step 3 ", shiny::icon("chevron-right", lib = "glyphicon")),
                   br(),
                   br(),
                   shinyWidgets::pickerInput("select_dependent_variable",
@@ -253,7 +252,8 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                   shinyWidgets::pickerInput("select_independent_variables",
                                             label = "D. Please choose the Independed Variables:",
                                             choices = NULL,
-                                            multiple = TRUE)
+                                            multiple = TRUE),
+                  next_label = paste("Next: Step 3 ", shiny::icon("chevron-right", lib = "glyphicon"))
 
                 ),
               
@@ -264,22 +264,25 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                   br(),
                   br(),
                   h3("One step closer, please choose the type of prediction..."),
-                  next_label = paste("Next: Step 4 ", shiny::icon("chevron-right", lib = "glyphicon")),
                   br(),
                   br(),
-                  box(title="Regression", 
-                      #p("This is content. The background color is set to light-blue"),
-                      br(),
-                      img(src = ""),
-                      footer=shinyWidgets::awesomeCheckbox("checkbox_regression_choice", label = "I would like get a amount as prediction")),
-                  box(title="Classification",
-                      #p("This is content. The background color is set to light-blue"),
-                      br(),
-                      img(src = ""),
-                      footer=shinyWidgets::awesomeCheckbox("checkbox_classification_choice", label = "I would like get a class like yes/no as prediction")),
-                  br(),
-                  br(),
-                  br()
+                  fluidPage(
+                    fluidRow(
+                      box(title="Regression", 
+                          img(src = "https://raw.githubusercontent.com/MariosCh1/Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny/main/www/regression_example.png",
+                              weight=300,
+                              height=192),
+                          footer=shinyWidgets::awesomeCheckbox("checkbox_regression_choice", label = "I would like get a amount as prediction")),
+     
+                      box(title="Classification",
+                          img(src = "https://raw.githubusercontent.com/MariosCh1/Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny/main/www/classification_example.png",
+                              weight=300,
+                              height=192),
+                          footer=shinyWidgets::awesomeCheckbox("checkbox_classification_choice", label = "I would like get a class as prediction"))
+                      
+                    )
+                  ),
+                  next_label = paste("Next: Step 4 ", shiny::icon("chevron-right", lib = "glyphicon"))
 
                   
                 ),
