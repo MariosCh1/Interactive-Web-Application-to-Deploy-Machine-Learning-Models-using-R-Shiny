@@ -270,13 +270,13 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                     fluidRow(
                       box(title="Regression", 
                           img(src = "https://raw.githubusercontent.com/MariosCh1/Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny/main/www/regression_example.png",
-                              weight=300,
+                              width=300,
                               height=192),
                           footer=shinyWidgets::awesomeCheckbox("checkbox_regression_choice", label = "I would like get a amount as prediction")),
      
                       box(title="Classification",
                           img(src = "https://raw.githubusercontent.com/MariosCh1/Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny/main/www/classification_example.png",
-                              weight=300,
+                              width=300,
                               height=192),
                           footer=shinyWidgets::awesomeCheckbox("checkbox_classification_choice", label = "I would like get a class as prediction"))
                       

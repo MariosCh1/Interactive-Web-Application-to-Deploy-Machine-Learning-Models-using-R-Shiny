@@ -806,12 +806,12 @@ if (interactive()) {
         shinyWidgets::updatePickerInput(
           session,
           "select_dependent_variable",
-          label = "B. Select the Depended Variable that you would like to predict:",
+          label = "C. Select the Depended Variable that you would like to predict:",
           choices = colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset,"ID")}else{values$train_dataset}),
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
-            size = 10
+            size = 8
           )
         )
         
@@ -825,19 +825,19 @@ if (interactive()) {
       shinyWidgets::updatePickerInput(
         session,
         "select_independent_variables",
-        label = "D. Select the Independed Variables:",
+        label = "D. Please choose the Independed Variables:",
         choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_dependent_variable))),
         options = pickerOptions(
           actionsBox = TRUE,
           liveSearch = TRUE,
-          size = 10
+          size = 8
         )
       )
       
       
     })
     
-    
+    #check unique choice in step 3
     observeEvent(input$checkbox_regression_choice , {
       if (input$checkbox_regression_choice == TRUE &&
           input$checkbox_classification_choice == TRUE) {
@@ -850,7 +850,7 @@ if (interactive()) {
     })
     
     
-    
+    #check unique choice in step 3
     observeEvent(input$checkbox_classification_choice, {
       if (input$checkbox_regression_choice == TRUE &&
           input$checkbox_classification_choice == TRUE) {
@@ -860,6 +860,38 @@ if (interactive()) {
       }
       
     })
+    
+    
+    
+    
+    observe({
+      
+      req(input$select_dependent_variable)
+      req(input$select_independent_variables)
+      
+      # values$train_data_x = data.matrix(removecolumn(values$train_partition,input$select_dependent_variable))
+      # values$train_label_y = values$train_partition[,input$select_dependent_variable]
+      # print(head(values$train_data_x))
+      # print(head(values$train_label_y))
+      # 
+      # values$test_data_x = data.matrix(removecolumn(values$test_partition,input$select_dependent_variable))
+      # values$test_label_y = values$test_partition[,input$select_dependent_variable]
+      # 
+      # values$xgb_train = xgb.DMatrix(data = values$train_data_x, label = values$train_label_y)
+      # values$xgb_test = xgb.DMatrix(data = values$test_data_x, label = values$test_label_y)
+
+    })
+    
+    
+    
+    observeEvent(input$checkbox_regression_choice==TRUE,{
+      
+      
+      
+      
+      
+    })
+    
     
   }
   

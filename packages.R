@@ -130,6 +130,11 @@ if(!("plyr" %in% rownames(installed.packages()))){
 if(!("shinyglide" %in% rownames(installed.packages()))){
 install.packages("shinyglide")
 }
+
+if(!("xgboost" %in% rownames(installed.packages()))){
+  install.packages("xgboost")
+}
+
 # 
 # if(!("remotes" %in% rownames(installed.packages()))){
 #   install.packages("remotes")
@@ -177,7 +182,8 @@ install.packages("shinyglide")
 #     "hablar",
 #     "ggplot2",
 #     "plotly",
-#     "plyr"
+#     "plyr",
+#     "xgboost"
 #    )
 #  )
 
@@ -218,5 +224,6 @@ library(ggplot2)
 library(plotly)
 library(plyr)
 library(shinyglide)
+library(xgboost)
 # library(remotes)
 # library(scroller)
