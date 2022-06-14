@@ -24,8 +24,8 @@ a0_info <- auth0::auth0_info()
 
 #-----------AUTH0: Retrieve Users with the Get Users Endpoint-------------------
 
-#reticulate::install_miniconda()
-reticulate::py_install("pandas")
+#reticulate::install_miniconda() #run  one time on setup
+#reticulate::py_install("pandas") #run  one time on setup
 reticulate::source_python("ask_auth0_for_tokens_api.py")
 reticulate::source_python("send_auth0_token_to_api.py")
 

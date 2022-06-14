@@ -1,9 +1,21 @@
+if(!("installr" %in% rownames(installed.packages()))){
+  install.packages("installr")
+}
+
 if(!("shiny" %in% rownames(installed.packages()))){
   install.packages("shiny")
 }
 
 if(!("shinythemes" %in% rownames(installed.packages()))){
   install.packages("shinythemes")
+}
+
+if(!("auth0" %in% rownames(installed.packages()))){
+  install.packages("auth0")
+}
+
+if(!("blob" %in% rownames(installed.packages()))){
+  install.packages("blob")
 }
 
 if(!("vroom" %in% rownames(installed.packages()))){
@@ -44,6 +56,10 @@ if(!("caroline" %in% rownames(installed.packages()))){
 
 if(!("tidyverse" %in% rownames(installed.packages()))){
   install.packages("tidyverse")
+}
+
+if(!("cli" %in% rownames(installed.packages()))){
+  install.packages("cli")
 }
 
 if(!("auth0" %in% rownames(installed.packages()))){
@@ -148,12 +164,15 @@ if(!("xgboost" %in% rownames(installed.packages()))){
 #old.packages()
 
 # update, without prompts for permission/clarification
-#update.packages(ask = FALSE, checkBuilt=TRUE)
-
+# update.packages(ask = FALSE, checkBuilt=TRUE)
+# 
 # install.packages(
 #   c(
+#     "installr", 
 #     "shiny",
 #     "shinythemes",
+#     "auth0",
+#     "blob",
 #     "vroom",
 #     "foreign",
 #     "DT",
@@ -187,8 +206,11 @@ if(!("xgboost" %in% rownames(installed.packages()))){
 #    )
 #  )
 
+library(installr)
 library(shiny)# web app framework
 library(shinythemes)# themes for shiny
+library(auth0)
+library(blob)
 library(vroom) # data management tool
 library(foreign) #SPSS file reading
 library(DT) #Data Tables
@@ -198,6 +220,7 @@ library(RMySQL)
 library(DBI)
 library(caroline)
 library(tidyverse)
+library(cli)
 library(auth0)
 library(rlang)
 library(httr)
@@ -227,3 +250,6 @@ library(shinyglide)
 library(xgboost)
 # library(remotes)
 # library(scroller)
+  
+
+#updateR()
