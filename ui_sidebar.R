@@ -22,7 +22,7 @@ sidebarMenu(
   menuItem(
     "ML Prediction Modeling",
     tabName = "Prediction",
-    icon = icon("dashboard"),
+    icon = icon("tachometer-alt"),
     menuSubItem("Supervised Learning", tabName = "supervised"),
     menuSubItem("Unsupervised Learning", tabName = "unsupervised")
     
