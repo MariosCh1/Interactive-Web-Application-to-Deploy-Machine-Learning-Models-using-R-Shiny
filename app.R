@@ -783,6 +783,24 @@ if (interactive()) {
       
     })
     
+    depended_var_discrete_or_not <-
+    eventReactive(input$checkbox_regression_choice == TRUE |
+                  input$checkbox_classification_choice == TRUE,{
+                      
+                      if(input$checkbox_regression_choice == TRUE){
+                        
+                        return(colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)],"ID")}else{values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)]}))
+                        
+                      } 
+                      
+                      else if (input$checkbox_classification_choice == TRUE){
+                        #ID is not able to be discrete
+                        return(colnames(values$train_dataset[which(lapply(values$train_dataset, is.discrete) == TRUE)]))
+                        
+                      }
+                      
+                  })
+    
     observe({
       
       req(input$select_train_dataset)
@@ -801,13 +819,12 @@ if (interactive()) {
       values$test_partition <- values$train_dataset[-values$train_indexes, ]
       
 
-      
-      
+  
         shinyWidgets::updatePickerInput(
           session,
           "select_dependent_variable",
           label = "C. Select the Depended Variable that you would like to predict:",
-          choices = colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset,"ID")}else{values$train_dataset}),
+          choices = depended_var_discrete_or_not(),
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
@@ -815,6 +832,7 @@ if (interactive()) {
           )
         )
         
+
       
       
       
@@ -837,7 +855,7 @@ if (interactive()) {
       
     })
     
-    #check unique choice in step 3
+    #check unique choice in step 2
     observeEvent(input$checkbox_regression_choice , {
       if (input$checkbox_regression_choice == TRUE &&
           input$checkbox_classification_choice == TRUE) {
@@ -850,7 +868,7 @@ if (interactive()) {
     })
     
     
-    #check unique choice in step 3
+    #check unique choice in step 2
     observeEvent(input$checkbox_classification_choice, {
       if (input$checkbox_regression_choice == TRUE &&
           input$checkbox_classification_choice == TRUE) {
@@ -860,37 +878,45 @@ if (interactive()) {
       }
       
     })
-    
-    
+
     
     
     observe({
-      
+
+      req(input$checkbox_regression_choice)
       req(input$select_dependent_variable)
       req(input$select_independent_variables)
-      
-      # values$train_data_x = data.matrix(removecolumn(values$train_partition,input$select_dependent_variable))
-      # values$train_label_y = values$train_partition[,input$select_dependent_variable]
-      # print(head(values$train_data_x))
-      # print(head(values$train_label_y))
-      # 
-      # values$test_data_x = data.matrix(removecolumn(values$test_partition,input$select_dependent_variable))
-      # values$test_label_y = values$test_partition[,input$select_dependent_variable]
-      # 
-      # values$xgb_train = xgb.DMatrix(data = values$train_data_x, label = values$train_label_y)
-      # values$xgb_test = xgb.DMatrix(data = values$test_data_x, label = values$test_label_y)
+
+
+      values$train_data_x <- data.matrix(subset(values$train_partition, select = input$select_independent_variables))
+      values$train_label_y <- values$train_partition[[input$select_dependent_variable]]
+
+      values$test_data_x <- data.matrix(subset(values$test_partition, select = input$select_independent_variables))
+      values$test_label_y <- values$test_partition[[input$select_dependent_variable]]
+
+      values$xgb_train <- xgb.DMatrix(data = values$train_data_x, label = values$train_label_y)
+      values$xgb_test <- xgb.DMatrix(data = values$test_data_x, label = values$test_label_y)
 
     })
     
     
-    
-    observeEvent(input$checkbox_regression_choice==TRUE,{
+    observe({
+      
+      req(input$checkbox_classification_choice)
+      req(input$select_dependent_variable)
+      req(input$select_independent_variables)
       
       
+      values$train_data_x <- sparse.model.matrix(~., subset(values$train_partition, select = input$select_independent_variables))
+      values$train_label_y <- values$train_partition[[input$select_dependent_variable]]
       
+      values$test_data_x <- sparse.model.matrix(~., subset(values$test_partition, select = input$select_independent_variables))
+      values$test_label_y <- values$test_partition[[input$select_dependent_variable]]
       
+
       
     })
+
     
     
   }

@@ -151,6 +151,10 @@ if(!("xgboost" %in% rownames(installed.packages()))){
   install.packages("xgboost")
 }
 
+if(!("Matrix" %in% rownames(installed.packages()))){
+  install.packages("Matrix")
+}
+
 # 
 # if(!("remotes" %in% rownames(installed.packages()))){
 #   install.packages("remotes")
@@ -202,7 +206,8 @@ if(!("xgboost" %in% rownames(installed.packages()))){
 #     "ggplot2",
 #     "plotly",
 #     "plyr",
-#     "xgboost"
+#     "xgboost",
+#     "Matrix"
 #    )
 #  )
 
@@ -248,6 +253,7 @@ library(plotly)
 library(plyr)
 library(shinyglide)
 library(xgboost)
+library(Matrix)
 # library(remotes)
 # library(scroller)
   
