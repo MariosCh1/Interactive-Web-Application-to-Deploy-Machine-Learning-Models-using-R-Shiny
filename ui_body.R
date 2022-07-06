@@ -1,7 +1,5 @@
-
-
-body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
-      
+body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide                                       
+                                   
   shinydashboard::tabItems(
 
     #-------------UploadFiles---------------------------------------------------
@@ -210,6 +208,16 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
           glide(
               
             id="SupPredictionGLide",
+            
+            custom_controls = glideControls(
+
+              next_content = list(
+                nextButton(),
+                tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "glyphicon"))))
+
+              )
+              
+            ),
               
             #height = "560px",
               
@@ -229,6 +237,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 br(),
                 br(),
                 sliderInput("select_data_partition", label = "B. Please select the percentage of train dataset partition:", min = 70, max = 100, value = 80, post = "%"),
+                next_condition = "input.select_train_dataset.length > 0",
                 next_label = paste("Next: Step 2 ", shiny::icon("chevron-right", lib = "glyphicon"))
                   
                   
@@ -265,7 +274,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 
               ),
               
-                screen(
+              screen(
                   
                   br(),
                   h2("Step 3: Independed & Depended Variables"),
@@ -284,13 +293,24 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                             label = "D. Please choose the Independed Variables:",
                                             choices = NULL,
                                             multiple = TRUE),
+                  next_condition = "input.select_independent_variables.length > 0",
                   next_label = paste("Next: Step 4 ", shiny::icon("chevron-right", lib = "glyphicon"))
 
-                ),
+              ),
               
             
-                screen(br(),
-                       h2("Step 4"))
+              screen(
+                  
+                br(),
+                h2("Step 4: Cross Validation & Hypertuning"),
+                br(),
+                br()
+
+
+              )
+            
+
+               
             
             )
         

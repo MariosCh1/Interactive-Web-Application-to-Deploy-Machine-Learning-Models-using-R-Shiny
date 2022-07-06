@@ -1,32 +1,35 @@
 sidebar <- shinydashboardPlus::dashboardSidebar(
-sidebarMenu(
   
-  id = "sidebar_menu",
-  
-  menuItem(
-    "Data Manager",
-    tabName = "data_manager",
-    icon = icon("database"),
-    menuSubItem("File Uploader", tabName = "upload_files"),
-    menuSubItem("Storage", tabName = "dataset_storage")
-  ),
-  
-  menuItem(
-    "Exploratory Data Analysis",
-    tabName = "EDA",
-    icon = icon("chart-area")
+  sidebarMenu(
     
-  ),
-  
-  
-  menuItem(
-    "ML Prediction Modeling",
-    tabName = "Prediction",
-    icon = icon("tachometer-alt"),
-    menuSubItem("Supervised Learning", tabName = "supervised"),
-    menuSubItem("Unsupervised Learning", tabName = "unsupervised")
+    id = "sidebar_menu",
+    
+    menuItem(
+      "Data Manager",
+      tabName = "data_manager",
+      icon = icon("database"),
+      menuSubItem("File Uploader", tabName = "upload_files"),
+      menuSubItem("Storage", tabName = "dataset_storage")
+    ),
+    
+    menuItem(
+      "Exploratory Data Analysis",
+      tabName = "EDA",
+      icon = icon("chart-area")
+      
+    ),
+    
+    
+    menuItem(
+      "ML Prediction Modeling",
+      tabName = "Prediction",
+      icon = icon("tachometer-alt"),
+      menuSubItem("Supervised Learning", tabName = "supervised"),
+      menuSubItem("Unsupervised Learning", tabName = "unsupervised")
+      
+    )
     
   )
-  
-))
+
+)
 

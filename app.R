@@ -56,6 +56,7 @@ if (interactive()) {
   #----------SERVER-------------------------------------------------------------
   
   server <-  function(input, output, session) {
+
     values <- reactiveValues()
     #values$stored_files <- NULL
     
@@ -451,7 +452,54 @@ if (interactive()) {
         )
       )
       
+      shinyWidgets::updatePickerInput(
+        session,
+        "selected_vars_EDA_continuous",
+        choices = values$EDA_vars_continuous,
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10,
+          maxOptions = 12
+        )
+      )
       
+      shinyWidgets::updatePickerInput(
+        session,
+        "selected_vars_EDA_grouped_continuous",
+        choices = values$EDA_vars_continuous,
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10,
+          maxOptions = 1
+        )
+      )
+      
+      shinyWidgets::updatePickerInput(
+        session,
+        "selected_vars_EDA_discrete",
+        choices = values$EDA_vars_discrete,
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10,
+          maxOptions = 12
+        )
+      )
+      
+      
+      shinyWidgets::updatePickerInput(
+        session,
+        "selected_vars_EDA_grouped_discrete",
+        choices = values$EDA_vars_discrete,
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 10,
+          maxOptions = 1
+        )
+      )
     })
     
     
@@ -483,17 +531,7 @@ if (interactive()) {
         
         shinyjs::show(id = "selected_vars_EDA_continuous")
         
-        shinyWidgets::updatePickerInput(
-          session,
-          "selected_vars_EDA_continuous",
-          choices = values$EDA_vars_continuous,
-          options = pickerOptions(
-            actionsBox = TRUE,
-            liveSearch = TRUE,
-            size = 10,
-            maxOptions = 12
-          )
-        )
+
         
         if (("Q-Q Plot" %in% input$plot_types &&
              input$plots_tabsetPanel == "Q-Q Plot") ||
@@ -505,17 +543,7 @@ if (interactive()) {
             )) {
           shinyjs::show(id = "selected_vars_EDA_grouped_continuous")
           
-          shinyWidgets::updatePickerInput(
-            session,
-            "selected_vars_EDA_grouped_continuous",
-            choices = values$EDA_vars_continuous,
-            options = pickerOptions(
-              actionsBox = TRUE,
-              liveSearch = TRUE,
-              size = 10,
-              maxOptions = 1
-            )
-          )
+
           
         }
         
@@ -533,30 +561,7 @@ if (interactive()) {
         
         shinyjs::show(id = "selected_vars_EDA_grouped_discrete")
         
-        shinyWidgets::updatePickerInput(
-          session,
-          "selected_vars_EDA_discrete",
-          choices = values$EDA_vars_discrete,
-          options = pickerOptions(
-            actionsBox = TRUE,
-            liveSearch = TRUE,
-            size = 10,
-            maxOptions = 12
-          )
-        )
-        
-        
-        shinyWidgets::updatePickerInput(
-          session,
-          "selected_vars_EDA_grouped_discrete",
-          choices = values$EDA_vars_discrete,
-          options = pickerOptions(
-            actionsBox = TRUE,
-            liveSearch = TRUE,
-            size = 10,
-            maxOptions = 1
-          )
-        )
+
         
         
       } else if ((
@@ -604,6 +609,8 @@ if (interactive()) {
       
     })
     
+    
+    
     output$plot_tabs <- renderUI({
       req(input$select_dataset)
       #req(input$selected_vars_EDA)
@@ -611,30 +618,50 @@ if (interactive()) {
       
       create_tabs <- function(x) {
         
+
         shiny::tabPanel(x, {
           wellPanel(style = "overflow-y:scroll; height:590px", {
+            
           if (x == "Dimension") {
             
+            renderUI({       
+              
+              req(input$selected_vars_EDA)
+            
               radialNetwork({
+                
                 DataExplorer::plot_str(values$selected_file_from_DB_to_plot[input$selected_vars_EDA],
                                        type = "radial")
               }, width = "auto")
            
+           })
+              
           } else if (x == "Basic Info") {
- 
+            
               renderPlotly({
+                
+                req(input$selected_vars_EDA)
+                
                 DataExplorer::plot_intro(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]) %>% ggplotly(height = 560)
+              
               })
             
           } else if (x == "Missing Values") {
             
               renderPlotly({
+                
+                req(input$selected_vars_EDA)
+                
                 DataExplorer::plot_missing(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]) %>% ggplotly(height = 560)
+              
               })
-            
+              
           } else if (x == "Histogram - Continuous") {
 
               renderPlotly({
+                
+                req(input$selected_vars_EDA_continuous)
+                
                 Hist <-
                 DataExplorer::plot_histogram(values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
                                              nrow = 1L,
@@ -644,11 +671,14 @@ if (interactive()) {
                 
               })
               
-            
+
             
           } else if (x == "Density") {
-     
+            
               renderPlotly({
+                
+                req(input$selected_vars_EDA_continuous)
+                
                 Density <-
                 DataExplorer::plot_density(values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
                                            nrow = 1L,
@@ -658,20 +688,30 @@ if (interactive()) {
                 
                 
               })
+              
+            
             
           } else if (x == "Multivariate Analysis") {
    
               renderPlotly({
+                
+                req(input$selected_vars_EDA)
+                
                 DataExplorer::plot_correlation(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA],
                   type = input$select_corr_calc_type ,
                   cor_args = list("use" = "pairwise.complete.obs")
                 ) %>% ggplotly() %>% layout(height = '560')
+                
               })
+              
             
           } else if (x == "Barplots - Categorical") {
-              
+
             renderPlotly({
+              
+              req(input$selected_vars_EDA_discrete)
+   
               Barplot <-
                 DataExplorer::plot_bar(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_discrete],
@@ -683,12 +723,17 @@ if (interactive()) {
                   
                   subplot(Barplot, nrows = length(Barplot), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Barplot) * 590))
                   
-                
+            
               })
+              
+            
             
           } else if (x == "Q-Q Plot") {
           
             renderPlotly({
+              
+              req(input$selected_vars_EDA_continuous)
+              
               QQ <-
                 DataExplorer::plot_qq(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
@@ -700,26 +745,35 @@ if (interactive()) {
                 subplot(QQ, nrows = length(QQ), margin = 0.02) %>% ggplotly() %>% layout(height = (length(QQ) * 590))
                 
               })
+              
             
           } else if (x == "Box Plots") {
             
-            renderPlotly({
-              Box <-
-                DataExplorer::plot_boxplot(
-                  values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
-                  by = input$selected_vars_EDA_grouped_continuous,
-                  nrow = 1L,
-                  ncol = 2L
-                ) 
+              renderPlotly({
                 
-                subplot(Box, nrows = length(Box), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Box) * 590))
+                req(input$selected_vars_EDA_continuous)
                 
-                
-              })
+                Box <-
+                  DataExplorer::plot_boxplot(
+                    values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
+                    by = input$selected_vars_EDA_grouped_continuous,
+                    nrow = 1L,
+                    ncol = 2L
+                  ) 
+                  
+                  subplot(Box, nrows = length(Box), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Box) * 590))
+                  
+                  
+                })
             
           } else if (x == "Scatter Plots") {
+          
             
               renderPlotly({
+                
+                req(input$selected_vars_EDA_continuous)
+                req(input$selected_vars_EDA_grouped_continuous)
+                
                 Scatter <- 
                   DataExplorer::plot_scatterplot(
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous],
@@ -731,10 +785,14 @@ if (interactive()) {
                 subplot(Scatter, nrows = length(Scatter), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Scatter) * 590))
                 
               })
+              
             
           } else if (x == "Principal Component Analysis") {
          
               renderPlotly({
+
+                req(input$selected_vars_EDA)
+                
                 PCA <-
                   DataExplorer::plot_prcomp(
                     na.omit(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]),
@@ -744,16 +802,17 @@ if (interactive()) {
                 
                 subplot(PCA, nrows = length(PCA), margin = 0.02) %>% ggplotly() %>% layout(height = (length(PCA) * 590))
                 
-                
-            
-              
-            })
+
+              })
+
             
           }
           
         })
         })
         
+      
+      
       }
       
       myTabs <- lapply(input$plot_types, create_tabs)
@@ -916,6 +975,8 @@ if (interactive()) {
 
       
     })
+    
+    observeEvent(input$ML_Submit_Button,{updateActionButton(session, "ML_Submit_Button",label = "Done", icon = character(0))})
 
     
     
