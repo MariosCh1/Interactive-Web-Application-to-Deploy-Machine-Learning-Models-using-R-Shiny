@@ -938,7 +938,20 @@ if (interactive()) {
       
     })
 
-    
+    #check if input$select_train_dataset changed
+    observeEvent(input$select_train_dataset, {
+      if (input$checkbox_regression_choice == TRUE |
+          input$checkbox_classification_choice == TRUE) {
+        shinyWidgets::updatePickerInput(session,
+                                        "checkbox_regression_choice",
+                                        selected = FALSE)
+        
+        shinyWidgets::updatePickerInput(session,
+                                        "checkbox_classification_choice",
+                                        selected = FALSE)
+      }
+      
+    })
     
     observe({
 
