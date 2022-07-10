@@ -261,6 +261,30 @@ getSavedFiles <-function(sub){
   return(request)
 }
 
+getCountofUsers <-function(sub){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT COUNT(*) FROM users WHERE sub = '",
+      sub,
+      "';"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
 
 getSelectedBlobFile <-function(sub, file_name){
   
