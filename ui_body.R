@@ -237,7 +237,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 br(),
                 br(),
                 sliderInput("select_data_partition", label = "B. Please select the percentage of train dataset partition:", min = 70, max = 100, value = 80, post = "%"),
-                next_condition = "input.select_train_dataset.length > 0",
+                #next_condition = "input.select_train_dataset.length > 0",
                 next_label = paste("Next: Step 2 ", shiny::icon("chevron-right", lib = "glyphicon"))
                   
                   

@@ -84,7 +84,7 @@ if (interactive()) {
     
     
     output$user <- renderUser(
-      if (!(session$userData$auth0_info$sub %in% send_api$user_id)) {
+      if (getCountofUsers(session$userData$auth0_info$sub) == 0) {   #if (!(session$userData$auth0_info$sub %in% send_api$user_id)) {
         
         saveUsertoDB(session$userData$auth0_info)
         dUser
@@ -414,7 +414,7 @@ if (interactive()) {
         shinyWidgets::updatePickerInput(
           session,
           "select_dataset",
-          choices = reactiveDBContent(),
+          choices = reactiveDBContent()$file_name,
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
@@ -825,60 +825,18 @@ if (interactive()) {
     
     
     observeEvent(input$sidebar_menu, {
+      
       if (input$sidebar_menu == "supervised") {
         
         shinyWidgets::updatePickerInput(
           session,
           "select_train_dataset",
-          choices = reactiveDBContent(),
+          choices = reactiveDBContent()$file_name,
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
-            size = 10
-          )
+            size = 10)
         )
-
-      }
-      
-    })
-    
-    depended_var_discrete_or_not <-
-    eventReactive(input$checkbox_regression_choice == TRUE |
-                  input$checkbox_classification_choice == TRUE,{
-                      
-                      if(input$checkbox_regression_choice == TRUE){
-                        
-                        return(colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)],"ID")}else{values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)]}))
-                        
-                      } 
-                      
-                      else if (input$checkbox_classification_choice == TRUE){
-                        #ID is not able to be discrete
-                        return(colnames(values$train_dataset[which(lapply(values$train_dataset, is.discrete) == TRUE)]))
-                        
-                      }
-                      
-                  })
-    
-    observe({
-      
-      req(input$select_train_dataset)
-      req(input$select_data_partition)
-      
-      values$train_dataset <-
-        getSelectedBlobFile(session$userData$auth0_info$sub,
-                            input$select_train_dataset)
-
-      values$train_indexes <- createDataPartition(seq.int(nrow(values$train_dataset)), 
-                                                  p = (input$select_data_partition/100), 
-                                                  list = FALSE)
-      
-      
-      values$train_partition <- values$train_dataset[values$train_indexes, ]
-      values$test_partition <- values$train_dataset[-values$train_indexes, ]
-      
-
-  
         shinyWidgets::updatePickerInput(
           session,
           "select_dependent_variable",
@@ -890,29 +848,103 @@ if (interactive()) {
             size = 8
           )
         )
-        
-
-      
-      
+      }
       
     })
     
-    observeEvent(input$select_dependent_variable,{
+    depended_var_discrete_or_not <- eventReactive(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
+                  
+
+        if(input$checkbox_regression_choice == TRUE){
+          
+          return(colnames(if('ID' %in% colnames(values$train_dataset)){removecolumn(values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)],"ID")}else{values$train_dataset[which(lapply(values$train_dataset, is.discrete) != TRUE)]}))
+                        
+        } else if (input$checkbox_classification_choice == TRUE){
+          
+          #ID is not able to be discrete
+          return(colnames(values$train_dataset[which(lapply(values$train_dataset, is.discrete) == TRUE)]))
+                        
+        }
+      
+      })
     
+    
+    observeEvent(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
+      
+      req(input$select_train_dataset)
+      req(input$select_data_partition)
+      
+      values$train_dataset <-
+        getSelectedBlobFile(session$userData$auth0_info$sub,
+                            input$select_train_dataset)
+      
+      values$train_indexes <- createDataPartition(seq.int(nrow(values$train_dataset)), 
+                                                  p = (input$select_data_partition/100), 
+                                                  list = FALSE)
+      
+      
+      values$train_partition <- values$train_dataset[values$train_indexes, ]
+      values$test_partition <- values$train_dataset[-values$train_indexes, ]
+      
+      
+      
+
+        
       shinyWidgets::updatePickerInput(
         session,
-        "select_independent_variables",
-        label = "D. Please choose the Independed Variables:",
-        choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_dependent_variable))),
+        "select_dependent_variable",
+        label = "C. Select the Depended Variable that you would like to predict:",
+        choices = depended_var_discrete_or_not(),
         options = pickerOptions(
           actionsBox = TRUE,
           liveSearch = TRUE,
           size = 8
         )
       )
+
+
       
       
     })
+
+    
+    observeEvent(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
+      
+
+        shinyWidgets::updatePickerInput(
+          session,
+          "select_dependent_variable",
+          label = "C. Select the Depended Variable that you would like to predict:",
+          choices = depended_var_discrete_or_not(),
+          options = pickerOptions(
+            actionsBox = TRUE,
+            liveSearch = TRUE,
+            size = 8
+          )
+        )
+      
+    })
+    
+    
+    observe({
+      
+      req(values$train_dataset)
+      req(input$select_dependent_variable)
+      
+      shinyWidgets::updatePickerInput(
+        session,
+        "select_independent_variables",
+        label = "D. Please choose the Independed Variables:",
+        choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_dependent_variable))),
+        selected = NULL,
+        options = pickerOptions(
+          actionsBox = TRUE,
+          liveSearch = TRUE,
+          size = 8
+        )
+      )
+    })
+    
     
     #check unique choice in step 2
     observeEvent(input$checkbox_regression_choice , {
@@ -938,6 +970,7 @@ if (interactive()) {
       
     })
 
+    
     #check if input$select_train_dataset changed
     observeEvent(input$select_train_dataset, {
       if (input$checkbox_regression_choice == TRUE |
