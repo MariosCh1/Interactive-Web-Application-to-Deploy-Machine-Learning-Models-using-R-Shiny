@@ -47,8 +47,9 @@ if (interactive()) {
   source("ui_header.R")
   source("ui_body.R")
   source("ui_sidebar.R")
+  source("ui_controbar.R")
   
-  ui <- dashboardPage(header, sidebar, body)
+  ui <- dashboardPage(header, sidebar, body, controlbar)
   
   a0_ui <- auth0_ui(ui , info = a0_info)
   
@@ -828,6 +829,8 @@ if (interactive()) {
       
       if (input$sidebar_menu == "supervised") {
         
+        if(length(reactiveDBContent()$file_name)>0){
+        
         shinyWidgets::updatePickerInput(
           session,
           "select_train_dataset",
@@ -848,6 +851,23 @@ if (interactive()) {
             size = 8
           )
         )
+        
+        } else {
+          
+          shinyalert(
+            html= TRUE,
+            title = "Datasets' Storage is Empty!",
+            text = tagList(p("Please save a Dataset to proceed with the Machine Learning Model"),
+                           actionButton("Go_to_file_uploader_button", label = "Navigate to File Uploader")),
+            type = "info",
+            #timer = 3000,
+            closeOnEsc = FALSE,
+            showConfirmButton = FALSE
+          )
+          
+          onclick("Go_to_file_uploader_button", {updateTabItems(session, "sidebar_menu", "upload_files")})
+          
+        }
       }
       
     })
