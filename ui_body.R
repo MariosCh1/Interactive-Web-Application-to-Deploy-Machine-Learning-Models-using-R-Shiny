@@ -66,7 +66,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
       
      
       tabName = "dataset_storage",
-      titlePanel("Storage"),
+      titlePanel("Datasets' Storage"),
       
       # Sidebar Datasets
       sidebarLayout(
@@ -338,6 +338,45 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         
         ),width=12)
       
+      
+    ),
+    
+    shinydashboard::tabItem(
+      
+      tabName = "ML_models_storage",
+      titlePanel("ML Models' Storage"),
+      
+      sidebarLayout(
+        
+        sidebarPanel(
+          
+          fluidPage(
+            
+            #DT::dataTableOutput("Storage_ML_Models"),
+            
+            #br(),
+            
+            #actionButton("ML_models_results", "Results")
+            
+          )
+          
+          , width = 3
+          
+        ),
+        
+        # Main panel
+        mainPanel(
+          
+          fluidPage(
+            
+            #uiOutput("ML_results_preview")
+            
+          )
+          , width = 9
+          
+        )
+        
+      )
       
     )
     
