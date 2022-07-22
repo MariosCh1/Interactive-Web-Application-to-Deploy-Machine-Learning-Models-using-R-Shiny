@@ -213,7 +213,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
               next_content = list(
                 nextButton(),
-                tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "glyphicon"))))
+                tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "font-awesome"))))
 
               )
               
