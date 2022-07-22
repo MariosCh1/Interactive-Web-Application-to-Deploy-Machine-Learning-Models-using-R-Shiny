@@ -35,4 +35,3 @@ sidebar <- shinydashboardPlus::dashboardSidebar(
   )
 
 )
-uiOutput(sidebar)
