@@ -11,29 +11,28 @@ sidebar <- shinydashboardPlus::dashboardSidebar(
     menuItem(
       "Data Manager",
       tabName = "data_manager",
-      icon = icon("database"),
-      startExpanded = TRUE,
-      menuSubItem("File Uploader", tabName = "upload_files", selected = TRUE),
-      menuSubItem("Datasets' Storage", tabName = "dataset_storage")
+      icon = shiny::icon("database"),
+      menuSubItem("File Uploader", tabName = "upload_files", icon = shiny::icon("angles-right")),
+      menuSubItem("Datasets' Storage", tabName = "dataset_storage", icon = shiny::icon("angles-right"))
     ),
     
     menuItem(
       "Exploratory Data Analysis",
       tabName = "EDA",
-      icon = icon("chart-area")
+      icon = shiny::icon("chart-area")
       
     ),
     
     menuItem(
       "ML Prediction Modeling",
       tabName = "Prediction",
-      icon = icon("tachometer-alt"),
-      menuSubItem("Supervised Learning", tabName = "supervised"),
-      menuSubItem("Unsupervised Learning", tabName = "unsupervised"),
-      menuSubItem("ML Models' Storage", tabName = "ML_models_storage")
+      icon = shiny::icon("gauge-high"),
+      menuSubItem("Supervised Learning", tabName = "supervised", icon = shiny::icon("angles-right")),
+      menuSubItem("Unsupervised Learning", tabName = "unsupervised", icon = shiny::icon("angles-right")),
+      menuSubItem("ML Models' Storage", tabName = "ML_models_storage", icon = shiny::icon("angles-right"))
     )
     
   )
 
 )
-
+uiOutput(sidebar)
