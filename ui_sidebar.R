@@ -27,8 +27,8 @@ sidebar <- shinydashboardPlus::dashboardSidebar(
       "ML Prediction Modeling",
       tabName = "Prediction",
       icon = shiny::icon("gauge-high"),
-      menuSubItem("Supervised Learning", tabName = "supervised", icon = shiny::icon("angles-right")),
-      menuSubItem("Unsupervised Learning", tabName = "unsupervised", icon = shiny::icon("angles-right")),
+      menuSubItem("Supervised ML", tabName = "supervised", icon = shiny::icon("angles-right")),
+      menuSubItem("Unsupervised ML", tabName = "unsupervised", icon = shiny::icon("angles-right")),
       menuSubItem("ML Models' Storage", tabName = "ML_models_storage", icon = shiny::icon("angles-right"))
     )
     

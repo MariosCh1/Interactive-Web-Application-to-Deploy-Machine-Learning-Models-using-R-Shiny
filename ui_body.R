@@ -196,7 +196,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
     shinydashboard::tabItem(
       
       tabName = "supervised",
-      titlePanel("Supervised Learning"),
+      titlePanel("Supervised Machine Learning"),
                             
       # Main panel
       mainPanel(
@@ -327,7 +327,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
     shinydashboard::tabItem(
       
       tabName = "unsupervised",
-      titlePanel("Unsupervised Learning"),
+      titlePanel("Unsupervised Machine Learning"),
       mainPanel(        
         
         fluidPage(
