@@ -34,6 +34,29 @@ options(
 # SHOW GLOBAL VARIABLES LIKE 'local_infile';
 # SET GLOBAL local_infile = true;
 
+set_global_local_infile <- function(){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- "SET GLOBAL local_infile = true;"
+
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  print("SET GLOBAL local_infile = true; - OK")
+  
+  DBI::dbDisconnect(dbcon)
+  
+  
+}
+
 
 #----------DATABASE FUNCTIONS---------------------------------------------------
 

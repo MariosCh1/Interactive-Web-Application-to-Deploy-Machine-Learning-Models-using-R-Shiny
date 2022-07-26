@@ -57,6 +57,12 @@ if (interactive()) {
   #----------SERVER-------------------------------------------------------------
   
   server <-  function(input, output, session) {
+    
+    #---------SET GLOBAL local_infile = true;-----------------------------------
+    observe({
+    set_global_local_infile()
+    })
+    #---------------------------------------------------------------------------
 
     values <- reactiveValues()
     #values$stored_files <- NULL
