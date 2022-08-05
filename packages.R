@@ -38,6 +38,22 @@ if(!("shinydashboardPlus" %in% rownames(installed.packages()))){
   install.packages("shinydashboardPlus")
 }
 
+if(!("styler" %in% rownames(installed.packages()))){
+  install.packages("styler")
+}
+
+if(!("shinyEffects" %in% rownames(installed.packages()))){
+  install.packages("shinyEffects")
+}
+
+if(!("shinyAce" %in% rownames(installed.packages()))){
+  install.packages("shinyAce")
+}
+
+if(!("shinyjqui" %in% rownames(installed.packages()))){
+  install.packages("shinyjqui")
+}
+
 if(!("RMySQL" %in% rownames(installed.packages()))){
   install.packages("RMySQL")
 }
@@ -186,6 +202,10 @@ if(!("waiter" %in% rownames(installed.packages()))){
 #     "DT",
 #     "shinydashboard",
 #     "shinydashboardPlus",
+#     "styler",
+#     "shinyEffects"
+#     "shinyAce",
+#     "shinyjqui",
 #     "RMySQL",
 #     "DBI",
 #     "RSQLite" ,
@@ -226,6 +246,10 @@ library(foreign) #SPSS file reading
 library(DT) #Data Tables
 library(shinydashboard)
 library(shinydashboardPlus)
+library(styler)
+library(shinyEffects)
+library(shinyAce)
+library(shinyjqui)
 library(RMySQL)
 library(DBI)
 library(caroline)

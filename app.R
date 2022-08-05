@@ -43,6 +43,9 @@ source("functions.R")
 
 ## Only run examples in interactive R sessions
 if (interactive()) {
+  
+  shinydashboardPlusGallery()
+  
   #----------UI-----------------------------------------------------------------
   source("ui_header.R")
   source("ui_body.R")

@@ -9,6 +9,13 @@ sidebar <- shinydashboardPlus::dashboardSidebar(
     id = "sidebar_menu",
     
     menuItem(
+      "Dashboard",
+      tabName = "dashboard",
+      icon = shiny::icon("house")
+      
+    ),
+    
+    menuItem(
       "Data Manager",
       tabName = "data_manager",
       icon = shiny::icon("database"),

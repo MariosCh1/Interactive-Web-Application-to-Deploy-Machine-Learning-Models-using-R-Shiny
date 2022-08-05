@@ -1,6 +1,15 @@
 body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide                                       
                                    
   shinydashboard::tabItems(
+    
+    #-------------Dashboard-----------------------------------------------------
+    
+    shinydashboard::tabItem(
+      
+      tabName = "dashboard",
+      titlePanel("Dashboard")
+      
+    ),
 
     #-------------UploadFiles---------------------------------------------------
     
@@ -304,8 +313,50 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 br(),
                 h2("Step 4: Cross Validation & Hypertuning"),
                 br(),
-                br()
-
+                br(),
+                h3("It's time to find the balance on features in order to create the most effective Regression ML Model"),
+                br(),
+                br(),
+    
+                wellPanel(style = "overflow-y:scroll; max-height: 360px; width:400px", {
+                  column(12,
+                    fluidRow(
+                      column(9,sliderInput("subsample_slider", "E1. Subsample: ", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("subsample_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("colsample_bytree_slider", "E2. Colsample_bytree:", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("colsample_bytree_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("max_depth_slider", "E3. Max_depth:", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("max_depth_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("min_child_slider", "E4. Min_child:", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("min_child_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("eta_slider", "E5. :", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("eta_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("n_rounds_slider", "E6. N_rounds:", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("n_rounds_step_input", "Step", value = 1))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(9,sliderInput("n_fold_slider", "E7. Ν_fold:", min = 0, max = 1000, value = 500)),
+                      column(3,numericInput("n_fold_step_input", "Step", value = 1))
+                    )
+                  ) 
+                })
+                
 
               )
             
