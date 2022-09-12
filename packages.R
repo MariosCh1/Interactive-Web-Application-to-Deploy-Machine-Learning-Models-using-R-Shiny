@@ -171,9 +171,13 @@ if(!("Matrix" %in% rownames(installed.packages()))){
   install.packages("Matrix")
 }
 
-if(!("waiter" %in% rownames(installed.packages()))){
-  install.packages("waiter")
-}
+# if(!("waiter" %in% rownames(installed.packages()))){
+#   install.packages("waiter")
+# }
+
+# if(!("shinyFeedback" %in% rownames(installed.packages()))){
+#   install.packages("shinyFeedback")
+# }
 
 # 
 # if(!("remotes" %in% rownames(installed.packages()))){
@@ -231,8 +235,7 @@ if(!("waiter" %in% rownames(installed.packages()))){
 #     "plotly",
 #     "plyr",
 #     "xgboost",
-#     "Matrix",
-#     "waiter"
+#     "Matrix"
 #    )
 #  )
 
@@ -283,7 +286,8 @@ library(plyr)
 library(shinyglide)
 library(xgboost)
 library(Matrix)
-library(waiter)
+#library(waiter)
+#library(shinyFeedback)
 # library(remotes)
 # library(scroller)
   
