@@ -838,6 +838,8 @@ if (interactive()) {
       
       if (input$sidebar_menu == "supervised") {
         
+        shinyjs::hide("ML_Stop_Button")
+        
         if(length(reactiveDBContent()$file_name)>0){
         
         shinyWidgets::updatePickerInput(
@@ -1051,10 +1053,88 @@ if (interactive()) {
       
     })
     
-    observeEvent(input$ML_Submit_Button,{updateActionButton(session, "ML_Submit_Button",label = "Done", icon = character(0))})
+    
+    observeEvent(input$subsample_step_input,{
+
+      shiny::updateSliderInput(session, inputId = "subsample_slider", step = input$subsample_step_input)
+
+    })
+    
+    observeEvent(input$colsample_bytree_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "colsample_bytree_slider", step = input$colsample_bytree_step_input)
+      
+    })
+    
+    observeEvent(input$max_depth_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "max_depth_slider", step = input$max_depth_step_input)
+      
+    })
+    
+    observeEvent(input$min_child_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "min_child_slider", step = input$min_child_step_input)
+      
+    })
+    
+    observeEvent(input$eta_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "eta_slider", step = input$eta_step_input)
+      
+    })
+    
+    observeEvent(input$n_rounds_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "n_rounds_slider", step = input$n_rounds_step_input)
+      
+    })
+    
+    observeEvent(input$n_fold_step_input,{
+      
+      shiny::updateSliderInput(session, inputId = "n_fold_slider", step = input$n_fold_step_input)
+      
+    })
+    
+    
+    
+    
+    observeEvent(input$ML_Submit_Button,{
+      
+      shinyjs::hide("ML_Submit_Button")
+      shinyjs::show("ML_Stop_Button")
+      
+
+      values$subsample_slider_seq <- seq(from= input$subsample_slider[1], to= input$subsample_slider[2] ,by = input$subsample_step_input)
+      values$colsample_bytree_slider_seq <- seq(from = input$colsample_bytree_slider[1] , to = input$colsample_bytree_slider[2], by = input$colsample_bytree_step_input)
+      values$max_depth_slider_seq <- seq(from = input$max_depth_slider[1] , to = input$max_depth_slider[2] , by = input$max_depth_step_input)
+      values$min_child_weight_slider_seq <- seq(from = input$min_child_weight_slider[1] , to = input$min_child_weight_slider[2] , by = input$min_child_weight_step_input)
+      values$eta_slider_seq <- seq(from = input$eta_slider[1] , to = input$eta_slider[2] , by = input$eta_step_input)
+      values$n_rounds_slider_seq <- seq(from = input$n_rounds_slider[1] , to = input$n_rounds_slider[2] , by = input$n_rounds_step_input)
+      values$n_fold_slider_seq <- seq(from = input$n_fold_slider[1] , to = input$n_fold_slider[2] , by = input$n_fold_step_input )
+        
+      xgb_gs_cv_regression(xgb_train = values$xgb_train,
+                            subsample_choice = values$subsample_slider_seq,
+                            colsample_bytree_choice = values$colsample_bytree_slider_seq,
+                            max_depth_choice = values$max_depth_slider_seq,
+                            min_child_weight_choice = values$min_child_weight_slider_seq,
+                            eta_choice = values$eta_slider_seq,
+                            n_rounds_choice = values$n_rounds_slider_seq,
+                            n_fold_choice = values$n_fold_slider_seq)
+        
+      shinyjs::hide("ML_Stop_Button")
+      shinyjs::show("ML_Submit_Button")
+
+      
+    })
+
+
 
     
+
     
+
+
   }
   
   a0_server <- auth0_server(server , info = a0_info)
