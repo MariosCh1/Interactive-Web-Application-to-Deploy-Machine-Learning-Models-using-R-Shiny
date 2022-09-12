@@ -222,7 +222,8 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
               next_content = list(
                 nextButton(),
-                tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "font-awesome"))))
+                tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "font-awesome")))),
+                tags$button(id="ML_Stop_Button",type="button",class="btn action-button btn-primary btn-danger last-screen",HTML(paste("Stop Learning", shiny::icon("stop", lib = "font-awesome"))))
 
               )
               
@@ -307,7 +308,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
               ),
               
-            
+          
               screen(
                   
                 br(),
@@ -318,41 +319,41 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                 br(),
                 br(),
     
-                wellPanel(style = "overflow-y:scroll; max-height: 360px; width:400px", {
+                wellPanel(style = "overflow-y:scroll; max-height: 360px; width:460px", {
                   column(12,
                     fluidRow(
-                      column(9,sliderInput("subsample_slider", "E1. Subsample: ", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("subsample_step_input", "Step", value = 1))
+                      column(9,sliderInput("subsample_slider", "E1. Subsample: ", min = 0, max = 1, step = 0.05, value = c(0.6, 0.8))),
+                      column(3,numericInput("subsample_step_input", "Step", min=0.05, max=1, step = 0.05, value = 0.05))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("colsample_bytree_slider", "E2. Colsample_bytree:", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("colsample_bytree_step_input", "Step", value = 1))
+                      column(9,sliderInput("colsample_bytree_slider", "E2. Colsample_bytree:", min = 0, max = 1, step = 0.05, value = c(0.6, 0.8))),
+                      column(3,numericInput("colsample_bytree_step_input", "Step", min=0.05, max=1, step = 0.05, value = 0.05))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("max_depth_slider", "E3. Max_depth:", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("max_depth_step_input", "Step", value = 1))
+                      column(9,sliderInput("max_depth_slider", "E3. Max_depth_weight:", min = 0, max = 50, step = 1, value = c(4, 11))),
+                      column(3,numericInput("max_depth_step_input", "Step", min=1, max=50, step = 1 , value = 1))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("min_child_slider", "E4. Min_child:", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("min_child_step_input", "Step", value = 1))
+                      column(9,sliderInput("min_child_weight_slider", "E4. Min_child_weight:", min = 0, max = 50, step = 1, value = c(1, 5))),
+                      column(3,numericInput("min_child_weight_step_input", "Step", min=1, max=50, step = 1, value = 1))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("eta_slider", "E5. :", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("eta_step_input", "Step", value = 1))
+                      column(9,sliderInput("eta_slider", "E5. Eta:", min = 0, max = 1, step = 0.01, value = c(0.06, 0.08))),
+                      column(3,numericInput("eta_step_input", "Step", min=0.01, max = 1, step = 0.01, value = 0.01))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("n_rounds_slider", "E6. N_rounds:", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("n_rounds_step_input", "Step", value = 1))
+                      column(9,sliderInput("n_rounds_slider", "E6. N_rounds:", min = 0, max = 1000, step = 50, value = c(100, 1000))),
+                      column(3,numericInput("n_rounds_step_input", "Step", min=1,  max=50, step = 50, value = 50))
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("n_fold_slider", "E7. Ν_fold:", min = 0, max = 1000, value = 500)),
-                      column(3,numericInput("n_fold_step_input", "Step", value = 1))
+                      column(9,sliderInput("n_fold_slider", "E7. Ν_fold:", min = 0, max = 20, step = 1, value = c(5, 10))),
+                      column(3,numericInput("n_fold_step_input", "Step", min=1,  max=20, step = 1, value = 1))
                     )
                   ) 
                 })
