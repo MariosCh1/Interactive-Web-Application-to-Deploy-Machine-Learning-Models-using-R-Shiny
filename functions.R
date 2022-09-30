@@ -5,7 +5,7 @@ removecolumn <- function(df, nameofthecolumn){
 
 
 
-xgb_gs_cv_regression <- function(xgb_train, subsample_choice, colsample_bytree_choice, max_depth_choice, min_child_weight_choice, eta_choice, n_rounds_choice, n_fold_choice){
+xgb_gs_cv_regression <- function(train_data_x, train_label_y, subsample_choice, colsample_bytree_choice, max_depth_choice, min_child_weight_choice, eta_choice, n_rounds_choice, n_fold_choice){
   
   searchGridSubCol <- expand.grid(
                                   subsample = subsample_choice, #c(0.6, 0.65, 0.7, 0.75, 0.8), (0,1]
@@ -33,8 +33,8 @@ xgb_gs_cv_regression <- function(xgb_train, subsample_choice, colsample_bytree_c
         #https://www.rdocumentation.org/packages/xgboost/versions/1.6.0.1/topics/xgb.cv
         #https://xgboost.readthedocs.io/en/latest/parameter.html
         
-        xgboostModelCV <- xgb.cv(objective = "reg:squarederror", #xgb parameter
-                                 data =  xgb_train, 
+        xgboostModelCV <- xgboost::xgb.cv(objective = "reg:squarederror", #xgb parameter
+                                 data =  xgboost::xgb.DMatrix(data = train_data_x, label = train_label_y), 
                                  booster = "gbtree", #xgb parameter
                                  showsd = TRUE, #xgb parameter whether to show standard deviation of cross validation
                                  #metrics = "rmse",#k-folds cv parameter
