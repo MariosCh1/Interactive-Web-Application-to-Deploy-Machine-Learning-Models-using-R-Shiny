@@ -1030,8 +1030,8 @@ if (interactive()) {
       values$test_data_x <- data.matrix(subset(values$test_partition, select = input$select_independent_variables))
       values$test_label_y <- values$test_partition[[input$select_dependent_variable]]
 
-      values$xgb_train <- xgb.DMatrix(data = values$train_data_x, label = values$train_label_y)
-      values$xgb_test <- xgb.DMatrix(data = values$test_data_x, label = values$test_label_y)
+      #values$xgb_train <- xgb.DMatrix(data = values$train_data_x, label = values$train_label_y)
+      #values$xgb_test <- xgb.DMatrix(data = values$test_data_x, label = values$test_label_y)
 
     })
     
@@ -1113,27 +1113,66 @@ if (interactive()) {
       values$n_rounds_slider_seq <- seq(from = input$n_rounds_slider[1] , to = input$n_rounds_slider[2] , by = input$n_rounds_step_input)
       values$n_fold_slider_seq <- seq(from = input$n_fold_slider[1] , to = input$n_fold_slider[2] , by = input$n_fold_step_input )
         
-      xgb_gs_cv_regression(xgb_train = values$xgb_train,
-                            subsample_choice = values$subsample_slider_seq,
-                            colsample_bytree_choice = values$colsample_bytree_slider_seq,
-                            max_depth_choice = values$max_depth_slider_seq,
-                            min_child_weight_choice = values$min_child_weight_slider_seq,
-                            eta_choice = values$eta_slider_seq,
-                            n_rounds_choice = values$n_rounds_slider_seq,
-                            n_fold_choice = values$n_fold_slider_seq)
-        
-      shinyjs::hide("ML_Stop_Button")
-      shinyjs::show("ML_Submit_Button")
-
+      
+      values$bg_process <- r_bg(xgb_gs_cv_regression, 
+                                args = list(train_data_x = values$train_data_x,
+                                            train_label_y = values$train_label_y,
+                                            subsample_choice = values$subsample_slider_seq, 
+                                            colsample_bytree_choice = values$colsample_bytree_slider_seq, 
+                                            max_depth_choice = values$max_depth_slider_seq, 
+                                            min_child_weight_choice = values$min_child_weight_slider_seq, 
+                                            eta_choice = values$eta_slider_seq, 
+                                            n_rounds_choice = values$n_rounds_slider_seq, 
+                                            n_fold_choice = values$n_fold_slider_seq),
+                                stdout = "|", 
+                                stderr = "2>&1")
+      
       
     })
 
 
-
+    observe({
+      invalidateLater(1000)
+      req(values$bg_process)
+      if(values$bg_process$poll_io(0)[["process"]] == "ready") {
+        shinyjs::hide("ML_Stop_Button")
+        shinyjs::show("ML_Submit_Button")
+        print(values$bg_process$get_result())
+        values$bg_process <- NULL
+      }
+    })
     
+    observeEvent(input$ML_Stop_Button, {
 
+      shinyalert(
+        title = "Are you sure you want to stop the MLearning process?",
+        callbackR = function(x){
+
+          if(x==TRUE){
+
+            shinyalert(
+              title = "The MLearning process have been stopped",
+              type = "success",
+              inputId = {
+                shinyjs::hide("ML_Stop_Button")
+                shinyjs::show("ML_Submit_Button")
+                cat(paste("Killing process - PID:", values$bg_process$get_pid(), "\n"))
+                values$bg_process$kill()},
+              confirmButtonText = 'Ok'
+            )
+
+          }
+
+        },
+        text = "Kindly note, if you stop the learning you should start from the beginning a new one!",
+        type = "warning",
+        showCancelButton = TRUE,
+        confirmButtonCol = '#DD6B55',
+        confirmButtonText = 'Yes, stop it!'
+      )
+
+    })
     
-
 
   }
   
