@@ -2,6 +2,10 @@ if(!("installr" %in% rownames(installed.packages()))){
   install.packages("installr")
 }
 
+if(!("Rtools42" %in% rownames(installed.packages()))){
+  install.packages("Rtools42")
+}
+
 if(!("shiny" %in% rownames(installed.packages()))){
   install.packages("shiny")
 }
@@ -171,6 +175,11 @@ if(!("Matrix" %in% rownames(installed.packages()))){
   install.packages("Matrix")
 }
 
+
+if(!("callr" %in% rownames(installed.packages()))){
+  install.packages("callr")
+}
+
 # if(!("waiter" %in% rownames(installed.packages()))){
 #   install.packages("waiter")
 # }
@@ -286,6 +295,7 @@ library(plyr)
 library(shinyglide)
 library(xgboost)
 library(Matrix)
+library(callr)
 #library(waiter)
 #library(shinyFeedback)
 # library(remotes)
