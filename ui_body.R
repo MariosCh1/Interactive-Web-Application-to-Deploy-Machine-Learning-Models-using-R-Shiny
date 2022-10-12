@@ -133,6 +133,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                                "A. Choose One or More Plot Types",
                                                choices = c("Dimension",
                                                            "Basic Info",
+                                                           "Summury Statistics",
                                                            "Missing Values",
                                                            "Histogram - Continuous",
                                                            "Density",
@@ -222,6 +223,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
               next_content = list(
                 nextButton(),
+                textOutput("RunningTime", inline = TRUE),
                 tags$button(id="ML_Submit_Button",type="button",class="btn action-button btn-primary btn-success last-screen",HTML(paste("Start Learning", shiny::icon("play", lib = "font-awesome")))),
                 tags$button(id="ML_Stop_Button",type="button",class="btn action-button btn-primary btn-danger last-screen",HTML(paste("Stop Learning", shiny::icon("stop", lib = "font-awesome"))))
 

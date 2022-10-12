@@ -656,6 +656,22 @@ if (interactive()) {
               
               })
             
+            
+          } else if (x == "Summury Statistics") {
+            
+            renderDataTable({
+            
+              req(input$selected_vars_EDA)
+              
+              st(values$selected_file_from_DB_to_plot[input$selected_vars_EDA], out="return")
+              
+            }, options = list(
+              scrollX = TRUE,
+              pageLength = -1,
+              dom = 't'
+              
+            ))
+            
           } else if (x == "Missing Values") {
             
               renderPlotly({
@@ -1132,12 +1148,20 @@ if (interactive()) {
 
 
     observe({
-      invalidateLater(1000)
+      invalidateLater(500)
       req(values$bg_process)
+      
+      output$RunningTime <- renderText({
+        
+        paste("Running Time: ", as_hms(difftime(round(Sys.time()), round(values$bg_process$get_start_time()))))
+        
+      })
+      
       if(values$bg_process$poll_io(0)[["process"]] == "ready") {
         shinyjs::hide("ML_Stop_Button")
         shinyjs::show("ML_Submit_Button")
         print(values$bg_process$get_result())
+        output$RunningTime <- NULL
         values$bg_process <- NULL
       }
     })
@@ -1157,7 +1181,9 @@ if (interactive()) {
                 shinyjs::hide("ML_Stop_Button")
                 shinyjs::show("ML_Submit_Button")
                 cat(paste("Killing process - PID:", values$bg_process$get_pid(), "\n"))
-                values$bg_process$kill()},
+                values$bg_process$kill()
+                output$RunningTime <- NULL
+                values$bg_process <- NULL},
               confirmButtonText = 'Ok'
             )
 

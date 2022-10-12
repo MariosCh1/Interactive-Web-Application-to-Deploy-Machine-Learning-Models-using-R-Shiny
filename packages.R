@@ -180,6 +180,14 @@ if(!("callr" %in% rownames(installed.packages()))){
   install.packages("callr")
 }
 
+if(!("vtable" %in% rownames(installed.packages()))){
+  install.packages("vtable")
+}
+
+if(!("hms" %in% rownames(installed.packages()))){
+  install.packages("hms")
+}
+
 # if(!("waiter" %in% rownames(installed.packages()))){
 #   install.packages("waiter")
 # }
@@ -296,6 +304,8 @@ library(shinyglide)
 library(xgboost)
 library(Matrix)
 library(callr)
+library(vtable) #summary stats
+library(hms)
 #library(waiter)
 #library(shinyFeedback)
 # library(remotes)
