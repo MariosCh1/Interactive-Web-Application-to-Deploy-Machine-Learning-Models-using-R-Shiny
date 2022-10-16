@@ -517,20 +517,27 @@ if (interactive()) {
       req(input$plot_types)
       req(input$plots_tabsetPanel)
       
-      if ((
-        "Histogram - Continuous" %in% input$plot_types &&
-        input$plots_tabsetPanel == "Histogram - Continuous"
-      ) ||
-      ("Density" %in% input$plot_types &&
-       input$plots_tabsetPanel == "Density") ||
-      ("Q-Q Plot" %in% input$plot_types &&
-       input$plots_tabsetPanel == "Q-Q Plot") ||
-      ("Box Plots" %in% input$plot_types &&
-       input$plots_tabsetPanel == "Box Plots") ||
-      (
-        "Scatter Plots" %in% input$plot_types &&
-        input$plots_tabsetPanel == "Scatter Plots"
-      )) {
+      if (
+        
+        ("Descriptive Statistics" %in% input$plot_types &&
+         input$plots_tabsetPanel == "Descriptive Statistics") ||
+        
+        ("Histogram - Continuous" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Histogram - Continuous") ||
+      
+        ("Density" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Density") ||
+      
+        ("Q-Q Plot" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Q-Q Plot") ||
+      
+        ("Box Plots" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Box Plots") ||
+      
+        ("Scatter Plots" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Scatter Plots")) {
+        
+        
         shinyjs::hide(id = "selected_vars_EDA")
         
         shinyjs::hide(id = "selected_vars_EDA_discrete")
@@ -543,24 +550,27 @@ if (interactive()) {
         
 
         
-        if (("Q-Q Plot" %in% input$plot_types &&
+        if (
+          
+          ("Q-Q Plot" %in% input$plot_types &&
              input$plots_tabsetPanel == "Q-Q Plot") ||
-            ("Box Plots" %in% input$plot_types &&
+          
+          ("Box Plots" %in% input$plot_types &&
              input$plots_tabsetPanel == "Box Plots") ||
-            (
-              "Scatter Plots" %in% input$plot_types &&
-              input$plots_tabsetPanel == "Scatter Plots"
-            )) {
+            
+          ("Scatter Plots" %in% input$plot_types &&
+              input$plots_tabsetPanel == "Scatter Plots")) {
+          
           shinyjs::show(id = "selected_vars_EDA_grouped_continuous")
           
 
-          
         }
         
-      } else if ((
-        "Barplots - Categorical" %in% input$plot_types &&
-        input$plots_tabsetPanel == "Barplots - Categorical"
-      )) {
+      } else if (
+        
+        ("Barplots - Categorical" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Barplots - Categorical")) {
+        
         shinyjs::hide(id = "selected_vars_EDA")
         
         shinyjs::hide(id = "selected_vars_EDA_continuous")
@@ -574,24 +584,29 @@ if (interactive()) {
 
         
         
-      } else if ((
-        !("Barplots - Categorical" %in% input$plot_types) ||
-        input$plots_tabsetPanel != "Barplots - Categorical"
-      ) ||
-      (
-        !("Histogram - Continuous" %in% input$plot_types) ||
-        input$plots_tabsetPanel != "Histogram - Continuous"
-      ) ||
-      (!("Density" %in% input$plot_types) ||
-       input$plots_tabsetPanel != "Density") ||
-      (!("Q-Q Plot" %in% input$plot_types) ||
-       input$plots_tabsetPanel != "Q-Q Plot") ||
-      (!("Box Plots" %in% input$plot_types) ||
-       input$plots_tabsetPanel != "Box Plots") ||
-      (
-        !("Scatter Plots" %in% input$plot_types) ||
-        input$plots_tabsetPanel != "Scatter Plots"
-      )) {
+      } else if (
+        
+        (!("Descriptive Statistics" %in% input$plot_types) ||
+         input$plots_tabsetPanel != "Descriptive Statistics") ||
+        
+        (!("Barplots - Categorical" %in% input$plot_types) ||
+        input$plots_tabsetPanel != "Barplots - Categorical") ||
+      
+        (!("Histogram - Continuous" %in% input$plot_types) ||
+        input$plots_tabsetPanel != "Histogram - Continuous") ||
+      
+        (!("Density" %in% input$plot_types) ||
+         input$plots_tabsetPanel != "Density") ||
+      
+        (!("Q-Q Plot" %in% input$plot_types) ||
+         input$plots_tabsetPanel != "Q-Q Plot") ||
+        
+        (!("Box Plots" %in% input$plot_types) ||
+         input$plots_tabsetPanel != "Box Plots") ||
+        
+        (!("Scatter Plots" %in% input$plot_types) ||
+        input$plots_tabsetPanel != "Scatter Plots")) {
+        
         shinyjs::show(id = "selected_vars_EDA")
         
         shinyjs::hide(id = "selected_vars_EDA_discrete")
@@ -664,7 +679,7 @@ if (interactive()) {
               req(input$selected_vars_EDA)
               
               st(values$selected_file_from_DB_to_plot[input$selected_vars_EDA], out="return")
-              
+
             }, options = list(
               scrollX = TRUE,
               pageLength = -1,
@@ -672,7 +687,27 @@ if (interactive()) {
               
             ))
             
-          } else if (x == "Missing Values") {
+          } 
+            
+            else if (x == "Descriptive Statistics") {
+              
+              renderDataTable({
+                
+                req(input$selected_vars_EDA_continuous)
+                
+                #stat.desc: Descriptive statistics on a data frame or time series
+                stat.desc(values$selected_file_from_DB_to_plot[input$selected_vars_EDA_continuous])
+                
+              }, options = list(
+                scrollX = TRUE,
+                pageLength = -1,
+                dom = 't'
+                
+              ))
+              
+            }
+            
+            else if (x == "Missing Values") {
             
               renderPlotly({
                 

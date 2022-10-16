@@ -134,6 +134,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                                choices = c("Dimension",
                                                            "Basic Info",
                                                            "Summury Statistics",
+                                                           "Descriptive Statistics",
                                                            "Missing Values",
                                                            "Histogram - Continuous",
                                                            "Density",

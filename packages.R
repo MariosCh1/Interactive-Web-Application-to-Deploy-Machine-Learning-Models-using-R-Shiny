@@ -188,6 +188,10 @@ if(!("hms" %in% rownames(installed.packages()))){
   install.packages("hms")
 }
 
+if(!("pastecs" %in% rownames(installed.packages()))){
+  install.packages("pastecs")
+}
+
 # if(!("waiter" %in% rownames(installed.packages()))){
 #   install.packages("waiter")
 # }
@@ -306,6 +310,7 @@ library(Matrix)
 library(callr)
 library(vtable) #summary stats
 library(hms)
+library(pastecs)
 #library(waiter)
 #library(shinyFeedback)
 # library(remotes)
