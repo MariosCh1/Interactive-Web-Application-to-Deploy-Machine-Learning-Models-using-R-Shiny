@@ -106,7 +106,22 @@ if (interactive()) {
       }
     )
     
+    
+    #--------Dashboard----------------------------------------------------------
 
+    output$DatasetCounter <- renderValueBox({
+      valueBox(
+        getCountofDatasets(session$userData$auth0_info$sub), "Datasets", shiny::icon("database"),
+        color = "yellow"
+      )
+    })
+    
+    output$MLModelsCounter <- renderValueBox({
+      valueBox(
+        getCountofModelsperUser(session$userData$auth0_info$sub), "ML Models", shiny::icon("gauge-high"),
+        color = "purple"
+      )
+    })
     
     #--------Upload Manager-----------------------------------------------------
     dataset <- function(x) {
@@ -888,7 +903,7 @@ if (interactive()) {
     observeEvent(input$sidebar_menu, {
       
       if (input$sidebar_menu == "supervised") {
-        
+
         shinyjs::hide("ML_Stop_Button")
         
         if(length(reactiveDBContent()$file_name)>0){
@@ -930,9 +945,25 @@ if (interactive()) {
           onclick("Go_to_file_uploader_button", {updateTabItems(session, "sidebar_menu", "upload_files")})
           
         }
+        
+      } else if(input$sidebar_menu == "ML_models_storage"){
+        
+        shinyjs::hide("BoxPrediction")
+        shinyjs::disable("Predict")
+
+        
+        values$choices_getModelTypes <- getModelTypes(session$userData$auth0_info$sub)
+
+        shinyWidgets::updatePickerInput(session,
+                                        "select_modeltype",
+                                        "A. Please select an available ML model type:",
+                                        choices = values$choices_getModelTypes$model_type,
+                                        options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+        
       }
       
     })
+    
     
     depended_var_discrete_or_not <- eventReactive(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
                   
@@ -949,6 +980,7 @@ if (interactive()) {
         }
       
       })
+
     
     
     observeEvent(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
@@ -1147,6 +1179,18 @@ if (interactive()) {
       
     })
     
+
+    
+    observe({
+      
+      if(getCountofModelsperUser(session$userData$auth0_info$sub)==0){
+
+        shinyjs::hide(selector = "a[data-value='ML_models_storage']")
+        
+      }
+      
+    })
+    
     
     
     
@@ -1191,15 +1235,182 @@ if (interactive()) {
         paste("Running Time: ", as_hms(difftime(round(Sys.time()), round(values$bg_process$get_start_time()))))
         
       })
+
       
       if(values$bg_process$poll_io(0)[["process"]] == "ready") {
+        
         shinyjs::hide("ML_Stop_Button")
         shinyjs::show("ML_Submit_Button")
-        print(values$bg_process$get_result())
+        
+        result <- values$bg_process$get_result()
+        
+        result <- xgb.Booster.complete(result)
+        # now the handle points to a valid internal booster model:
+        #print(result$handle)
+
+        values$CountofModelsperCase <- getCountofModelsperCase(session$userData$auth0_info$sub,getUploadedFileID(session$userData$auth0_info$sub, input$select_train_dataset),1,input$select_dependent_variable)
+
+        if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+          file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+        }
+        
+        #No Models Exist
+        if(values$CountofModelsperCase$count_models==0){
+          
+          print("***No Models Exist***")
+          
+          shinyalert(title = paste0("The CV MLearning Process with Hypertuning just completed! \n\nThe Best RMSE Score is: ", round(result$best_score, 3)),
+                     text =  paste0("The results came from the following configuration: \n\n",
+                                    "NRounds(niter): ", values$bg_process$get_result()$niter, "\n",
+                                    "NFold: ", values$bg_process$get_result()$params$nfold, "\n",
+                                    "Max Depth: ", values$bg_process$get_result()$params$max_depth, "\n",
+                                    "ETA: ", values$bg_process$get_result()$params$eta, "\n",
+                                    "Subsample: ", values$bg_process$get_result()$params$subsample, "\n",
+                                    "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
+                                    "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
+                                    "Would you like to save the first Model of the Dataset: ", input$select_train_dataset ,
+                                    " and the Depended Variable: ",input$select_dependent_variable ," ?"),
+                     callbackR = function(x){
+                       
+                       if(x==TRUE){
+                         
+                         shinyalert(title = "The Regression Model has been saved succefully",
+                                    text = paste0("The first Regression Model of the Dataset: ", input$select_train_dataset , 
+                                                  " with Depended Variable: ",input$select_dependent_variable, " just saved!"),
+                                    type = "success",
+                                    inputId = { 
+                                      
+                                      xgb.save(result, 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                                      
+                                      saveModeltoDB(session$userData$auth0_info$sub,
+                                                    1,
+                                                    getUploadedFileID(session$userData$auth0_info$sub, input$select_train_dataset)[["id"]],
+                                                    input$select_dependent_variable,
+                                                    input$select_independent_variables)
+                                      
+                                      if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+                                        file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                                      }
+                                      
+                                    },
+                                    confirmButtonText = 'Ok')
+                         
+                       }
+                       
+                     },
+                     type = "success",
+                     showCancelButton = TRUE,
+                     cancelButtonText = 'No, I will proceed with new MLearning!',
+                     confirmButtonText = 'Yes, Save it!')
+          
+        } else{
+          
+              getModelFile(session$userData$auth0_info$sub,
+                           getUploadedFileID(session$userData$auth0_info$sub, input$select_train_dataset),
+                           1,
+                           input$select_dependent_variable)
+              
+              values$exist_model <- xgb.load('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+              
+              if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+                file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+              }
+        
+              #New Model with Better RMSE Score
+              if(result$best_score < values$exist_model$best_score){
+                print("***New Model with Better RMSE Score***")
+                
+                xgb.save(result, 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                
+                saveModeltoDB(session$userData$auth0_info$sub,
+                              1,
+                              getUploadedFileID(session$userData$auth0_info$sub, input$select_train_dataset)[["id"]],
+                              input$select_dependent_variable,
+                              input$select_independent_variables)
+                
+                if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+                  file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                }
+                
+                shinyalert(title = "New Best Score!",
+                           text = paste0("Old (RMSE) Best Score: ", round(values$exist_model$best_score, 3), "\n",
+                                         "New (RMSE) Best Score: ", round(result$best_score, 3), "\n\n",
+                                         "The results came from the following configuration: \n\n",
+                                         "NRounds(niter): ", values$bg_process$get_result()$niter, "\n",
+                                         "NFold: ", values$bg_process$get_result()$params$nfold, "\n",
+                                         "Max Depth: ", values$bg_process$get_result()$params$max_depth, "\n",
+                                         "ETA: ", values$bg_process$get_result()$params$eta, "\n",
+                                         "Subsample: ", values$bg_process$get_result()$params$subsample, "\n",
+                                         "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
+                                         "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
+                                         "The old Regression Model of the Dataset: ", input$select_train_dataset , 
+                                         " with Depended Variable: ",input$select_dependent_variable, " just replaced with the best one!"),
+                           type = "success",
+                           confirmButtonText = 'Ok')
+                
+              }
+              
+              #New Model with worse or equal RMSE Score  
+              else if(result$best_score >= values$exist_model$best_score){
+                print("***New Model with worse or equal RMSE Score***")
+                
+                shinyalert(title = "The Regression Model hasn't been improved!",
+                           text = paste0("Old (RMSE) Best Score: ", round(values$exist_model$best_score, 3), "\n",
+                                         "New (RMSE) Best Score: ", round(result$best_score, 3), "\n\n",
+                                         "The results came from the following configuration: \n\n",
+                                         "NRounds(niter): ", values$bg_process$get_result()$niter, "\n",
+                                         "NFold: ", values$bg_process$get_result()$params$nfold, "\n",
+                                         "Max Depth: ", values$bg_process$get_result()$params$max_depth, "\n",
+                                         "ETA: ", values$bg_process$get_result()$params$eta, "\n",
+                                         "Subsample: ", values$bg_process$get_result()$params$subsample, "\n",
+                                         "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
+                                         "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
+                                         "Would you like to replace the old Regression Model with the new one of the Dataset: ", input$select_train_dataset , 
+                                         " with Depended Variable: ",input$select_dependent_variable," ?"),
+                           type = "warning",
+                           callbackR = function(x){
+                             
+                             if(x==TRUE){
+                               
+                               xgb.save(result, 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                               
+                               saveModeltoDB(session$userData$auth0_info$sub,
+                                             1,
+                                             getUploadedFileID(session$userData$auth0_info$sub, input$select_train_dataset)[["id"]],
+                                             input$select_dependent_variable,
+                                             input$select_independent_variables)
+                               
+                               if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+                                 file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+                               }
+                               
+                               shinyalert(title = "The New Regression Model have been replaced succefully",
+                                          text = paste0("Just replaced the Regression Model of the Dataset: ", input$select_train_dataset , 
+                                                        " with Depended Variable: ",input$select_dependent_variable),
+                                          type = "success",
+                                          confirmButtonText = 'Ok')
+                               
+                             }
+                             
+                           },
+                           showCancelButton = TRUE,
+                           cancelButtonText = 'Ignore, keep the old one',
+                           confirmButtonText = 'Yes, save the new model')
+                
+              }
+
+        }  
+        #return to first step after result redirection
+        click("Back_to_1_Step")
+
         output$RunningTime <- NULL
         values$bg_process <- NULL
       }
     })
+    
+    
+    
+    
     
     observeEvent(input$ML_Stop_Button, {
 
@@ -1234,6 +1445,90 @@ if (interactive()) {
 
     })
     
+    
+    
+    
+    
+    observeEvent(input$select_modeltype,{
+      
+      values$choiches_of_select_dataset_ML_model <- getDatasetNamessPerModelType(session$userData$auth0_info$sub, input$select_modeltype)
+      
+      shinyWidgets::updatePickerInput(session,
+                                      "select_dataset_ML_model",
+                                      "B. Please select the releted trained dataset:",
+                                      choices = values$choiches_of_select_dataset_ML_model$file_name,
+                                      options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+      
+    })
+    
+    
+    observeEvent(input$select_dataset_ML_model,{
+      
+      values$choiches_of_select_variable_to_predict <- getTrainedVarPerDatasetNamessPerModelType(session$userData$auth0_info$sub, input$select_modeltype,input$select_dataset_ML_model)
+      
+      shinyWidgets::updatePickerInput(session,
+                                      "select_variable_to_predict",
+                                      "C. Please select the available variable you want to predict:",
+                                      choices = values$choiches_of_select_variable_to_predict$dependent_var,
+                                      options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+    })
+    
+    
+    observeEvent(input$select_variable_to_predict,{
+      
+      if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+        file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+      }
+      
+      getModelFile(session$userData$auth0_info$sub,
+                   getUploadedFileID(session$userData$auth0_info$sub, input$select_dataset_ML_model),
+                   if(input$select_modeltype=="Regression"){1},
+                   input$select_variable_to_predict)
+      
+      values$exist_model <- xgb.load('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+      
+      values$feature_names <- strsplit(getIndependentVarsofModel(session$userData$auth0_info$sub,
+                                                                 getUploadedFileID(session$userData$auth0_info$sub, input$select_dataset_ML_model),
+                                                                 if(input$select_modeltype=="Regression"){1},
+                                                                 input$select_variable_to_predict)$independent_vars, ", ")[[1]]
+      
+      output$feature_importance_plot <- renderPlotly({
+      xgb.ggplot.importance(xgb.importance(feature_names = values$feature_names, model = values$exist_model)) %>% ggplotly()})
+      
+      #----------
+      
+      shinyWidgets::updatePickerInput(session,
+                                      "select_test_dataset_to_predict",
+                                      "D. Please select the available test dataset you want to predict:",
+                                      choices = subset(reactiveDBContent()$file_name,reactiveDBContent()$file_name!=input$select_dataset_ML_model),
+                                      options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+
+      
+    })
+
+    
+    observeEvent(input$Predict,{
+      
+      if (file.exists('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')) {
+        file.remove('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+      }
+      
+      getModelFile(session$userData$auth0_info$sub,
+                   getUploadedFileID(session$userData$auth0_info$sub, input$select_dataset_ML_model),
+                   if(input$select_modeltype=="Regression"){1},
+                   input$select_variable_to_predict)
+      
+      values$exist_model <- xgb.load('C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model')
+      
+      values$feature_names <- strsplit(getIndependentVarsofModel(session$userData$auth0_info$sub,
+                                getUploadedFileID(session$userData$auth0_info$sub, input$select_dataset_ML_model),
+                                if(input$select_modeltype=="Regression"){1},
+                                input$select_variable_to_predict)$independent_vars, ", ")[[1]]
+      
+      
+
+    })
+
 
   }
   
