@@ -65,12 +65,30 @@ xgb_gs_cv_regression <- function(train_data_x, train_label_y, subsample_choice, 
   
   )
 
-  gs_results_varnames <- c("TestRMSE", "TrainRMSE", "SubSampRate", "ColSampRate", "Depth", "eta", "currentMinChildWeight", "nrounds", "nfold")
+  gs_results_varnames <- c("TestRMSE", "TrainRMSE", "SubSampRate", "ColSampRate", "Depth", "eta", "MinChildWeight", "nrounds", "nfold")
   t_rmseErrorsHyperparameters <- as.data.frame(t(rmseErrorsHyperparameters))
   names(t_rmseErrorsHyperparameters)<- gs_results_varnames
 
-  return(t_rmseErrorsHyperparameters)
+  t_rmse_min <- t_rmseErrorsHyperparameters[which.min(t_rmseErrorsHyperparameters$TestRMSE),]
+  
+  xgb_model_train <- xgboost::xgboost(objective = "reg:squarederror", #xgb parameter
+                                      data =  xgboost::xgb.DMatrix(data = train_data_x, label = train_label_y),
+                                      booster = "gbtree", #xgb parameter
+                                      showsd = TRUE, #xgb parameter whether to show standard deviation of cross validation
+                                      verbose = TRUE, #xgb print the statistics during the process
+                                      print_every_n = 10, #k-folds cv parameter
+                                      early_stopping_rounds = 10, #k-folds cv parameter
+                                      eval_metric = "rmse", #xgb parameter
+                                      "nrounds" = t_rmse_min$nrounds, #k-folds cv parameter
+                                      "nfold" = t_rmse_min$nfold, #k-folds cv parameter
+                                      "max_depth" = t_rmse_min$Depth,
+                                      "eta" = t_rmse_min$eta,
+                                      "subsample" = t_rmse_min$SubSampRate,
+                                      "colsample_bytree" = t_rmse_min$ColSampRate,
+                                      "min_child_weight" = t_rmse_min$MinChildWeight)
 
+  return(xgb_model_train)
+  
 }
 
 
