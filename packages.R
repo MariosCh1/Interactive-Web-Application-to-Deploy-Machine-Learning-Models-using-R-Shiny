@@ -192,6 +192,11 @@ if(!("pastecs" %in% rownames(installed.packages()))){
   install.packages("pastecs")
 }
 
+if(!("Ckmeans.1d.dp" %in% rownames(installed.packages()))){
+  install.packages("Ckmeans.1d.dp")
+}
+
+
 # if(!("waiter" %in% rownames(installed.packages()))){
 #   install.packages("waiter")
 # }
