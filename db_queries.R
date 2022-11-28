@@ -29,6 +29,30 @@ options(
 #   FOREIGN KEY (sub) REFERENCES users(sub)
 # ) ;
 
+# CREATE TABLE savedmodels (
+#   sub VARCHAR(255),
+#   modeltype_id INTEGER,
+#   dataset_id INTEGER,
+#   dependent_var VARCHAR(255),
+#   independent_vars TEXT,
+#   last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+#   uploaded_model LONGBLOB,
+#   PRIMARY KEY (modeltype_id, dataset_id, dependent_var),
+#   FOREIGN KEY (sub) REFERENCES users(sub),
+#   FOREIGN KEY (dataset_id) REFERENCES uploadedfiles(id),
+#   FOREIGN KEY (modeltype_id) REFERENCES modeltypes(id)
+# ) ;
+# 
+# 
+# CREATE TABLE modeltypes (
+#   id INTEGER,
+#   model_type TEXT,
+#   PRIMARY KEY (id)
+# ) ;
+
+# INSERT INTO modeltypes (id, model_type) VALUES ("1","Regression");
+# INSERT INTO modeltypes (id, model_type) VALUES ("2","Classification");
+
 
 # https://www.digitalocean.com/community/questions/how-to-enable-local-capability-in-mysql-workbench
 # SHOW GLOBAL VARIABLES LIKE 'local_infile';
@@ -331,4 +355,278 @@ getSelectedBlobFile <-function(sub, file_name){
 
   return(data)
 
+}
+
+getUploadedFileID <-function(sub,file_name){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT id FROM uploadedfiles WHERE sub = '",sub, "' 
+                  AND file_name = '",file_name,"';")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+getModelTypes <-function(sub){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT distinct(B.model_type) FROM mbads_thesis_db.savedmodels A
+        LEFT JOIN mbads_thesis_db.modeltypes B on A.modeltype_id=B.id
+        WHERE sub = '",
+        sub,
+        "';"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+getDatasetNamessPerModelType <- function(sub, model_type){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT distinct(C.file_name) 
+       FROM mbads_thesis_db.savedmodels A
+       LEFT JOIN mbads_thesis_db.modeltypes B 
+       on A.modeltype_id=B.id
+       LEFT JOIN mbads_thesis_db.uploadedfiles C
+       on A.dataset_id=C.id
+       WHERE A.sub = '", sub,"' AND B.model_type = '", model_type,
+      "' ;"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+getTrainedVarPerDatasetNamessPerModelType <- function(sub, model_type, file_name){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT A.dependent_var 
+       FROM mbads_thesis_db.savedmodels A
+       LEFT JOIN mbads_thesis_db.modeltypes B 
+       on A.modeltype_id=B.id
+       LEFT JOIN mbads_thesis_db.uploadedfiles C
+       on A.dataset_id=C.id
+       WHERE A.sub = '", sub,"' AND B.model_type = '", model_type, "' AND C.file_name = '", file_name,
+      "' ;"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+getCountofDatasets <-function(sub){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT COUNT(*) FROM uploadedfiles WHERE sub = '",
+      sub,
+      "';"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+getCountofModelsperUser <-function(sub){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT COUNT(*) FROM savedmodels WHERE sub = '",
+      sub,
+      "';"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+
+getCountofModelsperCase <-function(sub, dataset_id,modeltype_id,dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <-
+    paste0(
+      "SELECT COUNT(*) count_models FROM savedmodels WHERE sub = '",sub,"' AND dataset_id = ",dataset_id, " AND modeltype_id = ",modeltype_id, " AND dependent_var = '",dependent_var, "' ;"
+    )
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+}
+
+
+saveModeltoDB <- function(sub, modeltype_id, dataset_id, dependent_var, independent_vars) {
+  print ("**************saveModeltoDB***************")
+  
+  dbcon <- RMySQL::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+
+  independent_vars <- toString(independent_vars)
+  
+  insert_data = data.frame(sub, modeltype_id, dataset_id, dependent_var, independent_vars)
+  
+  print(insert_data)
+  
+  RMySQL::dbWriteTable(dbcon, "savedmodels", 
+                       insert_data, field.types = c(sub = "VARCHAR(255)", #FOREIGN KEY - DON'T DROP THE TABLE
+                                                    modeltype_id = "INTEGER",
+                                                    dataset_id = "INTEGER",
+                                                    dependent_var = "VARCHAR(255)",
+                                                    independent_vars = "TEXT",
+                                                    uploaded_model = "LONGBLOB"),
+                       append = TRUE, row.names = FALSE)
+  
+  #uploaded_file_query <- paste0("C:\\Users\\mario\\Desktop\\MBADS-MSc\\Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny\\xgb.model")
+  
+  uploaded_file_query <- paste0("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model")
+  
+  query <- dbplyr::build_sql("UPDATE savedmodels SET uploaded_model = LOAD_FILE(",uploaded_file_query,
+                             ") WHERE sub = ",sub," AND dataset_id = ",dataset_id, " AND modeltype_id = ",modeltype_id, " AND dependent_var = ",dependent_var," AND independent_vars = ",independent_vars, ";", con = dbcon)
+  
+  rs <- DBI::dbSendQuery(dbcon, query)
+  
+  DBI::dbClearResult(rs)
+  
+  RMySQL::dbDisconnect(dbcon)
+  
+  shinyjs::show(selector = "a[data-value='ML_models_storage']")
+
+}
+
+getModelFile <-function(sub, dataset_id, modeltype_id, dependent_var){
+
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT uploaded_model FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' into dumpfile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/xgb.model' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
+}
+
+
+getIndependentVarsofModel <-function(sub, dataset_id, modeltype_id, dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT independent_vars FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
 }
