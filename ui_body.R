@@ -311,6 +311,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                             label = "C. Select the Depended Variable that you would like to predict:",
                                             choices = NULL,
                                             multiple = FALSE),
+                  shinyWidgets::awesomeCheckbox("zero_or_not_prediction", label = "Allow to predict negative values", value = TRUE),
                   br(),
                   br(),
                   shinyWidgets::pickerInput("select_independent_variables",
@@ -419,28 +420,28 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
           fluidPage(
             
             shinyWidgets::pickerInput("select_modeltype",
-                                      "A. Please select an available ML model type:",
+                                      "A. Select an available ML model type:",
                                       choices = NULL, 
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE)),
             
             br(),
             
             shinyWidgets::pickerInput("select_dataset_ML_model",
-                                      "B. Please select the releted trained dataset:",
+                                      "B. Select the releted trained dataset:",
                                       choices = NULL,
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE)),
             
             br(),
             
             shinyWidgets::pickerInput("select_variable_to_predict",
-                                      "C. Please select the available variable you want to predict:",
+                                      "C. Select the available variable you want to predict:",
                                       choices = NULL,
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE)),
             
             br(),
             
             shinyWidgets::pickerInput("select_test_dataset_to_predict",
-                                      "D. Please select the available test dataset you want to predict:",
+                                      "D. Select the available test dataset you want to predict:",
                                       choices = NULL,
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE)),
             
@@ -448,7 +449,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             
             br(),
             
-            actionButton("Predict", "Predict")
+            actionButton("Predict", "New Prediction", shiny::icon("add", lib = "font-awesome"))
             
           )
           
@@ -460,26 +461,63 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
         mainPanel(
           
           fluidPage(
-            
-            
+
             #uiOutput("ML_results_preview")
             
-            box(
-              title = "Feature Importance",
-              #"Box body",
-              id = "BoxFeatureImportance",
-              collapsible = TRUE,
-              closable = FALSE,
-              plotlyOutput("feature_importance_plot")
+            fluidRow(
+              
+              valueBoxOutput("TrainRMSE"),
+              
+              valueBoxOutput("TestRMSE"),
+              
+              valueBoxOutput("Partition_perc"),
+              
             ),
             
-            box(
-              title = "Prediction",
-              #"Box body",
-              id = "BoxPrediction",
-              collapsible = TRUE,
-              closable = FALSE,
-              plotlyOutput("prediction_plot")
+            fluidRow(
+              
+              box(
+                title = "Feature Importance Plot",
+                id = "BoxFeatureImportance",
+                collapsible = TRUE,
+                closable = FALSE,
+                plotlyOutput("feature_importance_plot")
+              ),
+              
+              box(
+                title = "Feature Importance",
+                id = "BoxFeatureImportanceTable",
+                collapsible = TRUE,
+                closable = FALSE,
+                DT::dataTableOutput("feature_importance_table", height = 400)
+              )
+            
+            ),
+            
+            fluidRow(
+              
+              box(
+                width = 12,
+                title = "Prediction Plot",
+                id = "BoxPredictionTestedPartition",
+                collapsible = TRUE,
+                closable = FALSE,
+                plotlyOutput("prediction_plot")
+              )
+            
+            ),
+            
+            fluidRow(
+            
+              box(
+                width = 12,
+                title = "Prediction in New Data",
+                id = "BoxPredictionNewData",
+                collapsible = TRUE,
+                closable = TRUE,
+                DT::dataTableOutput("New_Prediction")
+              )
+            
             )
             
           )
