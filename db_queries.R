@@ -35,6 +35,10 @@ options(
 #   dataset_id INTEGER,
 #   dependent_var VARCHAR(255),
 #   independent_vars TEXT,
+#   data_partition INTEGER,
+#   test_rmse DOUBLE,
+#   test_original_partition LONGTEXT,
+#   test_prediction LONGTEXT,
 #   last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 #   uploaded_model LONGBLOB,
 #   PRIMARY KEY (modeltype_id, dataset_id, dependent_var),
@@ -540,7 +544,7 @@ getCountofModelsperCase <-function(sub, dataset_id,modeltype_id,dependent_var){
 }
 
 
-saveModeltoDB <- function(sub, modeltype_id, dataset_id, dependent_var, independent_vars) {
+saveModeltoDB <- function(sub, modeltype_id, dataset_id, dependent_var, independent_vars, data_partition, test_rmse, test_original_partition, test_prediction) {
   print ("**************saveModeltoDB***************")
   
   dbcon <- RMySQL::dbConnect(
@@ -554,30 +558,40 @@ saveModeltoDB <- function(sub, modeltype_id, dataset_id, dependent_var, independ
 
   independent_vars <- toString(independent_vars)
   
-  insert_data = data.frame(sub, modeltype_id, dataset_id, dependent_var, independent_vars)
+  test_original_partition <- toString(test_original_partition)
+  
+  test_prediction <-  toString(test_prediction)
+
+  insert_data = data.frame(sub, modeltype_id, dataset_id, dependent_var, independent_vars, data_partition, test_rmse, test_original_partition, test_prediction)
   
   print(insert_data)
   
-  RMySQL::dbWriteTable(dbcon, "savedmodels", 
+  RMySQL::dbWriteTable(dbcon, "savedmodels",
                        insert_data, field.types = c(sub = "VARCHAR(255)", #FOREIGN KEY - DON'T DROP THE TABLE
                                                     modeltype_id = "INTEGER",
                                                     dataset_id = "INTEGER",
                                                     dependent_var = "VARCHAR(255)",
                                                     independent_vars = "TEXT",
+                                                    data_partition = "INTEGER",
+                                                    test_rmse = "DOUBLE",
+                                                    test_original_partition = "LONGTEXT",
+                                                    test_prediction = "LONGTEXT",
                                                     uploaded_model = "LONGBLOB"),
-                       append = TRUE, row.names = FALSE)
-  
+                       #append = TRUE, 
+                       overwrite = TRUE,
+                       row.names = FALSE)
+
   #uploaded_file_query <- paste0("C:\\Users\\mario\\Desktop\\MBADS-MSc\\Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny\\xgb.model")
-  
+
   uploaded_file_query <- paste0("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model")
-  
+
   query <- dbplyr::build_sql("UPDATE savedmodels SET uploaded_model = LOAD_FILE(",uploaded_file_query,
                              ") WHERE sub = ",sub," AND dataset_id = ",dataset_id, " AND modeltype_id = ",modeltype_id, " AND dependent_var = ",dependent_var," AND independent_vars = ",independent_vars, ";", con = dbcon)
-  
+
   rs <- DBI::dbSendQuery(dbcon, query)
-  
+
   DBI::dbClearResult(rs)
-  
+
   RMySQL::dbDisconnect(dbcon)
   
   shinyjs::show(selector = "a[data-value='ML_models_storage']")
@@ -620,6 +634,102 @@ getIndependentVarsofModel <-function(sub, dataset_id, modeltype_id, dependent_va
   )
   
   query <- paste0("SELECT independent_vars FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
+}
+
+
+getDataPartitionofModel <-function(sub, dataset_id, modeltype_id, dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT data_partition FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
+}
+
+
+
+getTestRMSEofModel <-function(sub, dataset_id, modeltype_id, dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT test_rmse FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
+}
+
+getTestOriginalPartition <-function(sub, dataset_id, modeltype_id, dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT test_original_partition FROM savedmodels WHERE sub = '",sub, "' 
+                  AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
+  
+  request <- DBI::dbGetQuery(dbcon, query)
+  
+  
+  DBI::dbDisconnect(dbcon)
+  
+  return(request)
+  
+}
+
+
+getTestPrediction <-function(sub, dataset_id, modeltype_id, dependent_var){
+  
+  dbcon <- DBI::dbConnect(
+    RMySQL::MySQL(),
+    dbname = options()$mysql$databaseName,
+    host = options()$mysql$host,
+    port = options()$mysql$port,
+    user = options()$mysql$user,
+    password = options()$mysql$password
+  )
+  
+  query <- paste0("SELECT test_prediction FROM savedmodels WHERE sub = '",sub, "' 
                   AND dataset_id = '",dataset_id, "' AND modeltype_id = '",modeltype_id,"' AND dependent_var = '",dependent_var,"' ;")
   
   request <- DBI::dbGetQuery(dbcon, query)
