@@ -6,6 +6,14 @@ if(!("Rtools42" %in% rownames(installed.packages()))){
   install.packages("Rtools42")
 }
 
+if(!("devtools" %in% rownames(installed.packages()))){
+  install.packages("devtools")
+}
+
+if(!("boxuancui/DataExplorer" %in% rownames(installed.packages()))){
+    devtools::install_github("boxuancui/DataExplorer")
+}
+
 if(!("shiny" %in% rownames(installed.packages()))){
   install.packages("shiny")
 }
@@ -196,6 +204,18 @@ if(!("Ckmeans.1d.dp" %in% rownames(installed.packages()))){
   install.packages("Ckmeans.1d.dp")
 }
 
+if(!("retry" %in% rownames(installed.packages()))){
+  install.packages("retry")
+}
+
+if(!("reshape2" %in% rownames(installed.packages()))){
+  install.packages("reshape2")
+}
+
+# if(!("latticeExtra" %in% rownames(installed.packages()))){
+#   install.packages("latticeExtra")
+# }
+
 
 # if(!("waiter" %in% rownames(installed.packages()))){
 #   install.packages("waiter")
@@ -316,6 +336,10 @@ library(callr)
 library(vtable) #summary stats
 library(hms)
 library(pastecs)
+library(retry)
+library(reshape2)
+#library(devtools)
+#library(latticeExtra)
 #library(waiter)
 #library(shinyFeedback)
 # library(remotes)
