@@ -37,7 +37,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
               "uploaded_file",
               "A. Choose a File",
               multiple = TRUE,
-              accept = c(".csv", ".tsv", ".sav", ".xls",".xlsx")),
+              accept = c(".csv", ".tsv", ".sav", ".xls",".xlsx", ".json")),
             
             DT::dataTableOutput("file_to_save"),
           

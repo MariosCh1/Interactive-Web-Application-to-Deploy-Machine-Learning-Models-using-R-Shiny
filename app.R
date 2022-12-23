@@ -140,8 +140,9 @@ if (interactive()) {
         tsv = vroom::vroom(file[x,]$datapath, delim = "\t"),
         xlsx = read_excel(file[x,]$datapath),
         xls = read_excel(file[x,]$datapath),
+        json = fromJSON(file[x,]$datapath) %>% as.data.frame(),
         validate(
-          "Invalid file; Please upload a .csv, .sav, .tsv, .xls or .xlsx file"
+          "Invalid file; Please upload a .csv, .sav, .tsv, .xls, .xlsx or .json file"
         )
       )
       
@@ -835,7 +836,7 @@ if (interactive()) {
                     by = input$selected_vars_EDA_grouped_continuous,
                     nrow = 1L,
                     ncol = 2L
-                  ) 
+                  )   
                   
                   subplot(Box, nrows = length(Box), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Box) * 590))
                   
