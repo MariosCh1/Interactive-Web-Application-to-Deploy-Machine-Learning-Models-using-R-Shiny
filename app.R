@@ -744,7 +744,7 @@ if (interactive()) {
                                              nrow = 1L,
                                              ncol = 2L) 
                 
-                subplot(Hist, nrows = length(Hist), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Hist) * 590))
+                subplot(Hist, nrows = length(Hist), margin = 0.02) %>% layout(height = (length(Hist) * 590))
                 
               })
               
@@ -761,7 +761,7 @@ if (interactive()) {
                                            nrow = 1L,
                                            ncol = 2L)
                 
-                subplot(Density, nrows = length(Density), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Density) * 590))
+                subplot(Density, nrows = length(Density), margin = 0.02) %>% layout(height = (length(Density) * 590))
                 
                 
               })
@@ -778,7 +778,7 @@ if (interactive()) {
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA],
                   type = input$select_corr_calc_type ,
                   cor_args = list("use" = "pairwise.complete.obs")
-                ) %>% ggplotly() %>% layout(height = '560')
+                ) %>% ggplotly(height = 560)
                 
               })
               
@@ -798,7 +798,7 @@ if (interactive()) {
                   ncol = 2L
                 ) 
                   
-                  subplot(Barplot, nrows = length(Barplot), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Barplot) * 590))
+                  subplot(Barplot, nrows = length(Barplot), margin = 0.02) %>% layout(height = (length(Barplot) * 590))
                   
             
               })
@@ -819,7 +819,7 @@ if (interactive()) {
                   ncol = 2L
                 ) 
                 
-                subplot(QQ, nrows = length(QQ), margin = 0.02) %>% ggplotly() %>% layout(height = (length(QQ) * 590))
+                subplot(QQ, nrows = length(QQ), margin = 0.02) %>% layout(height = (length(QQ) * 590))
                 
               })
               
@@ -838,7 +838,7 @@ if (interactive()) {
                     ncol = 2L
                   )   
                   
-                  subplot(Box, nrows = length(Box), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Box) * 590))
+                  subplot(Box, nrows = length(Box), margin = 0.02) %>% layout(height = (length(Box) * 590))
                   
                   
                 })
@@ -859,7 +859,7 @@ if (interactive()) {
                   ncol = 2L
                 ) 
                 
-                subplot(Scatter, nrows = length(Scatter), margin = 0.02) %>% ggplotly() %>% layout(height = (length(Scatter) * 590))
+                subplot(Scatter, nrows = length(Scatter), margin = 0.02) %>% layout(height = (length(Scatter) * 590))
                 
               })
               
@@ -877,7 +877,7 @@ if (interactive()) {
                     ncol = 2L
                   )
                 
-                subplot(PCA, nrows = length(PCA), margin = 0.02) %>% ggplotly() %>% layout(height = (length(PCA) * 590))
+                subplot(PCA, nrows = length(PCA), margin = 0.02) %>% layout(height = (length(PCA) * 590))
                 
 
               })
