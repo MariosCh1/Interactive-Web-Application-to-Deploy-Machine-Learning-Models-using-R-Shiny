@@ -577,16 +577,23 @@ saveModeltoDB <- function(sub, modeltype_id, dataset_id, dependent_var, independ
                                                     test_original_partition = "LONGTEXT",
                                                     test_prediction = "LONGTEXT",
                                                     uploaded_model = "LONGBLOB"),
-                       #append = TRUE, 
-                       overwrite = TRUE,
+                       append = TRUE, 
+                       #overwrite = TRUE,
                        row.names = FALSE)
 
   #uploaded_file_query <- paste0("C:\\Users\\mario\\Desktop\\MBADS-MSc\\Interactive-Web-Application-to-Deploy-Machine-Learning-Models-using-R-Shiny\\xgb.model")
 
   uploaded_file_query <- paste0("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\xgb.model")
 
-  query <- dbplyr::build_sql("UPDATE savedmodels SET uploaded_model = LOAD_FILE(",uploaded_file_query,
-                             ") WHERE sub = ",sub," AND dataset_id = ",dataset_id, " AND modeltype_id = ",modeltype_id, " AND dependent_var = ",dependent_var," AND independent_vars = ",independent_vars, ";", con = dbcon)
+  query <- dbplyr::build_sql("UPDATE savedmodels 
+                              SET dependent_var = ",dependent_var,",
+                              independent_vars = ",independent_vars,",
+                              data_partition = ",data_partition,",
+                              test_rmse = ",test_rmse,",
+                              test_original_partition = ",test_original_partition,",
+                              test_prediction = ",test_prediction,",
+                              uploaded_model = LOAD_FILE(",uploaded_file_query,") 
+                             WHERE sub = ",sub," AND dataset_id = ",dataset_id, " AND modeltype_id = ",modeltype_id, " AND dependent_var = ",dependent_var," AND independent_vars = ",independent_vars, ";", con = dbcon)
 
   rs <- DBI::dbSendQuery(dbcon, query)
 
