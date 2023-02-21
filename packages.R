@@ -212,6 +212,10 @@ if(!("reshape2" %in% rownames(installed.packages()))){
   install.packages("reshape2")
 }
 
+if(!("DiagrammeR" %in% rownames(installed.packages()))){
+  install.packages("DiagrammeR")
+}
+
 # if(!("latticeExtra" %in% rownames(installed.packages()))){
 #   install.packages("latticeExtra")
 # }
@@ -338,6 +342,7 @@ library(hms)
 library(pastecs)
 library(retry)
 library(reshape2)
+library(DiagrammeR)
 #library(devtools)
 #library(latticeExtra)
 #library(waiter)
