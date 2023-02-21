@@ -35,7 +35,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             fileInput(
               
               "uploaded_file",
-              "A. Choose a File",
+              "A. Choose a File:",
               multiple = TRUE,
               accept = c(".csv", ".tsv", ".sav", ".xls",".xlsx", ".json")),
             
@@ -44,7 +44,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             br(),
           
             shinyWidgets::pickerInput("show_vars",
-                        "B. Select Columns to Save",
+                        "B. Select Columns to Save:",
                         choices = NULL,
                         options = pickerOptions(actionsBox = TRUE, liveSearch = TRUE), 
                         multiple = TRUE),
@@ -137,7 +137,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
 
             
             shinyWidgets::checkboxGroupButtons("plot_types",
-                                               "A. Choose One or More Plot Types",
+                                               "A. Choose One or More Plot Types:",
                                                choices = c("Dimension",
                                                            "Basic Info",
                                                            "Summury Statistics",
@@ -147,10 +147,10 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                                                            "Density",
                                                            "Multivariate Analysis",
                                                            "Barplots - Categorical",
-                                                           "Q-Q Plot",
+                                                           "Q-Q Plots",
                                                            "Box Plots",
                                                            "Scatter Plots",
-                                                           "Principal Component Analysis")),
+                                                           "PCA")),
             
             br(),
 
@@ -162,34 +162,34 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             br(),
             
             shinyWidgets::pickerInput("selected_vars_EDA",
-                                      label = "C. Select Variables from Dataset for EDA",
+                                      label = "C. Select Variables:",
                                       choices = NULL,
                                       multiple = TRUE),
             
             shinyWidgets::pickerInput("selected_vars_EDA_continuous",
-                                      label = "C. Select Continuous Variables from Dataset for EDA",
+                                      label = "C. Select Continuous Variables:",
                                       choices = NULL,
                                       multiple = TRUE),
             
             shinyWidgets::pickerInput("selected_vars_EDA_discrete",
-                                      label = "C. Select Discrete Variables from Dataset for EDA",
+                                      label = "C. Select Discrete Variables:",
                                       choices = NULL,
                                       multiple = TRUE),
             
             br(),
             
             shinyWidgets::pickerInput("selected_vars_EDA_grouped_discrete",
-                                      label = "D. Select Discrete Variables from Dataset for grouping",
+                                      label = "D. Select Discrete Variable for grouping:",
                                       choices = NULL,
                                       multiple = TRUE),
             
             shinyWidgets::pickerInput("selected_vars_EDA_grouped_continuous",
-                                      label = "D. Select Continuous Variables from Dataset for grouping",
+                                      label = "D. Select Continuous Variable for grouping:",
                                       choices = NULL,
                                       multiple = TRUE),
             
             shinyWidgets::pickerInput("select_corr_calc_type",
-                                      label = "D. Select variables' type for correlation",
+                                      label = "D. Select variables' type for correlation:",
                                       choices = c("all", "discrete", "continuous"))
 
           )
@@ -427,7 +427,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
             br(),
             
             shinyWidgets::pickerInput("select_dataset_ML_model",
-                                      "B. Select the releted trained dataset:",
+                                      "B. Select the related trained dataset:",
                                       choices = NULL,
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE)),
             
@@ -493,6 +493,19 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
               )
             
             ),
+            
+            # fluidRow(
+            #   
+            #   box(
+            #     width = 12,
+            #     title = "XGB Tree Plot",
+            #     id = "XGBTreePlot",
+            #     collapsible = TRUE,
+            #     closable = FALSE,
+            #     grVizOutput("XGB_Tree_Plot",height = "800px")
+            #   )
+            #   
+            # ),
             
             fluidRow(
               
