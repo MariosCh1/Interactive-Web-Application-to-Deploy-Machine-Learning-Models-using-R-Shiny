@@ -9,7 +9,7 @@
 
 set.seed(100)
 options(shiny.port = 8080 #, shiny.maxRequestSize = 40 * 1024 ^ 2
-        )
+        ,scipen = 999) #avoid num scientific format
 
 
 
@@ -544,8 +544,8 @@ if (interactive()) {
         ("Density" %in% input$plot_types &&
         input$plots_tabsetPanel == "Density") ||
       
-        ("Q-Q Plot" %in% input$plot_types &&
-        input$plots_tabsetPanel == "Q-Q Plot") ||
+        ("Q-Q Plots" %in% input$plot_types &&
+        input$plots_tabsetPanel == "Q-Q Plots") ||
       
         ("Box Plots" %in% input$plot_types &&
         input$plots_tabsetPanel == "Box Plots") ||
@@ -568,8 +568,8 @@ if (interactive()) {
         
         if (
           
-          ("Q-Q Plot" %in% input$plot_types &&
-             input$plots_tabsetPanel == "Q-Q Plot") ||
+          ("Q-Q Plots" %in% input$plot_types &&
+             input$plots_tabsetPanel == "Q-Q Plots") ||
           
           ("Box Plots" %in% input$plot_types &&
              input$plots_tabsetPanel == "Box Plots") ||
@@ -614,8 +614,8 @@ if (interactive()) {
         (!("Density" %in% input$plot_types) ||
          input$plots_tabsetPanel != "Density") ||
       
-        (!("Q-Q Plot" %in% input$plot_types) ||
-         input$plots_tabsetPanel != "Q-Q Plot") ||
+        (!("Q-Q Plots" %in% input$plot_types) ||
+         input$plots_tabsetPanel != "") ||
         
         (!("Box Plots" %in% input$plot_types) ||
          input$plots_tabsetPanel != "Box Plots") ||
@@ -661,7 +661,7 @@ if (interactive()) {
         
 
         shiny::tabPanel(x, {
-          wellPanel(style = "overflow-y:scroll; height:590px", {
+          #wellPanel(style = "overflow-y:scroll; height:590px", {
             
           if (x == "Dimension") {
             
@@ -679,13 +679,13 @@ if (interactive()) {
               
           } else if (x == "Basic Info") {
             
-              renderPlotly({
+              renderPlot({
                 
                 req(input$selected_vars_EDA)
                 
-                DataExplorer::plot_intro(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]) %>% ggplotly(height = 560)
+                DataExplorer::plot_intro(values$selected_file_from_DB_to_plot[input$selected_vars_EDA])
               
-              })
+              }, height = 590)
             
             
           } else if (x == "Summury Statistics") {
@@ -725,13 +725,13 @@ if (interactive()) {
             
             else if (x == "Missing Values") {
             
-              renderPlotly({
+              renderPlot({
                 
                 req(input$selected_vars_EDA)
                 
-                DataExplorer::plot_missing(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]) %>% ggplotly(height = 560)
+                DataExplorer::plot_missing(values$selected_file_from_DB_to_plot[input$selected_vars_EDA]) 
               
-              })
+              }, height = 590)
               
           } else if (x == "Histogram - Continuous") {
 
@@ -778,7 +778,7 @@ if (interactive()) {
                   values$selected_file_from_DB_to_plot[input$selected_vars_EDA],
                   type = input$select_corr_calc_type ,
                   cor_args = list("use" = "pairwise.complete.obs")
-                ) %>% ggplotly(height = 560)
+                ) %>% ggplotly(height = 590)
                 
               })
               
@@ -805,7 +805,7 @@ if (interactive()) {
               
             
             
-          } else if (x == "Q-Q Plot") {
+          } else if (x == "Q-Q Plots") {
           
             renderPlotly({
               
@@ -864,7 +864,7 @@ if (interactive()) {
               })
               
             
-          } else if (x == "Principal Component Analysis") {
+          } else if (x == "PCA") {
          
               renderPlotly({
 
@@ -885,7 +885,7 @@ if (interactive()) {
             
           }
           
-        })
+        #})
         })
         
       
@@ -954,12 +954,34 @@ if (interactive()) {
 
         
         values$choices_getModelTypes <- getModelTypes(session$userData$auth0_info$sub)
+        values$choiches_of_select_dataset_ML_model <- getDatasetNamessPerModelType(session$userData$auth0_info$sub, input$select_modeltype)
+        values$choiches_of_select_variable_to_predict <- getTrainedVarPerDatasetNamessPerModelType(session$userData$auth0_info$sub, input$select_modeltype,input$select_dataset_ML_model)
+        
 
         shinyWidgets::updatePickerInput(session,
                                         "select_modeltype",
                                         "A. Select an available ML model type:",
                                         choices = values$choices_getModelTypes$model_type,
                                         options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+        
+        shinyWidgets::updatePickerInput(session,
+                                        "select_dataset_ML_model",
+                                        "B. Select the related trained dataset:",
+                                        choices = values$choiches_of_select_dataset_ML_model$file_name,
+                                        options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+        
+        shinyWidgets::updatePickerInput(session,
+                                        "select_variable_to_predict",
+                                        "C. Select the available variable you want to predict:",
+                                        choices = values$choiches_of_select_variable_to_predict$dependent_var,
+                                        options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+        
+        shinyWidgets::updatePickerInput(session,
+                                        "select_test_dataset_to_predict",
+                                        "D. Select the available test dataset you want to predict:",
+                                        choices = subset(reactiveDBContent()$file_name,reactiveDBContent()$file_name!=input$select_dataset_ML_model),
+                                        options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
+        
         
       }
       
@@ -1452,6 +1474,7 @@ if (interactive()) {
 
         #return to first step after result redirection
         click("Back_to_1_Step")
+        click("ML_models_storage")
         
         output$RunningTime <- NULL
         values$bg_process <- NULL
@@ -1595,6 +1618,8 @@ if (interactive()) {
         
       ))
       
+
+      
       values$test_label_y <- strsplit(getTestOriginalPartition(session$userData$auth0_info$sub,
                                                                   getUploadedFileID(session$userData$auth0_info$sub, input$select_dataset_ML_model),
                                                                   if(input$select_modeltype=="Regression"){1},
@@ -1606,7 +1631,11 @@ if (interactive()) {
                                                                   input$select_variable_to_predict)$test_prediction, ", ")[[1]]
       
 
-      
+      # output$XGB_Tree_Plot <- renderGrViz({
+      #   
+      #   xgb.plot.tree(feature_names = values$feature_names,model = values$exist_model$finalModel, trees= 0:1, show_node_id=TRUE)
+      #   
+      # })
       
       index <- 1:length(values$test_label_y)
       original <- values$test_label_y %>% as.numeric()
@@ -1682,10 +1711,10 @@ if (interactive()) {
       shinyjs::show("BoxPredictionNewData")
       
       values$new_dataset_to_predict <- values$select_test_dataset_to_predict %>% as.data.frame()
+      
+      values$dmatrix_new_prediction <- xgb.DMatrix(data = data.matrix(subset(values$new_dataset_to_predict, select = values$feature_names)))
 
-      values$new_dataset_to_predict[,input$select_variable_to_predict] <- predict(values$exist_model, 
-                                                                                          xgb.DMatrix(data = data.matrix(subset(values$new_dataset_to_predict, 
-                                                                                                                                select = values$feature_names))))
+      values$new_dataset_to_predict[,input$select_variable_to_predict] <- predict(values$exist_model, values$dmatrix_new_prediction)
 
       if(sum(subset(values$predicted, values$predicted < 0)) == 0) {
         
@@ -1693,7 +1722,9 @@ if (interactive()) {
         
       }
         
-      output$New_Prediction <- renderDataTable({values$new_dataset_to_predict})
+      output$New_Prediction <- renderDataTable({values$new_dataset_to_predict},
+                                               options = list(scrollX = TRUE,
+                                                              pageLength = 12))
       
     })
 
