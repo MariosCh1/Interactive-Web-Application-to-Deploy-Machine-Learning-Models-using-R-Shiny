@@ -688,7 +688,7 @@ if (interactive()) {
               }, height = 590)
             
             
-          } else if (x == "Summury Statistics") {
+          } else if (x == "Summary Statistics") {
             
             renderDataTable({
             
@@ -921,8 +921,8 @@ if (interactive()) {
         shinyWidgets::updatePickerInput(
           session,
           "select_dependent_variable",
-          label = "C. Select the Depended Variable that you would like to predict:",
-          choices = depended_var_discrete_or_not(),
+          label = "C. Select the Dependent Variable that you would like to predict:",
+          choices = dependent_var_discrete_or_not(),
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
@@ -988,7 +988,7 @@ if (interactive()) {
     })
     
     
-    depended_var_discrete_or_not <- eventReactive(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
+    dependent_var_discrete_or_not <- eventReactive(input$checkbox_regression_choice == TRUE | input$checkbox_classification_choice == TRUE,{
                   
 
         if(input$checkbox_regression_choice == TRUE){
@@ -1030,8 +1030,8 @@ if (interactive()) {
       shinyWidgets::updatePickerInput(
         session,
         "select_dependent_variable",
-        label = "C. Select the Depended Variable that you would like to predict:",
-        choices = depended_var_discrete_or_not(),
+        label = "C. Select the Dependent Variable that you would like to predict:",
+        choices = dependent_var_discrete_or_not(),
         options = pickerOptions(
           actionsBox = TRUE,
           liveSearch = TRUE,
@@ -1051,8 +1051,8 @@ if (interactive()) {
         shinyWidgets::updatePickerInput(
           session,
           "select_dependent_variable",
-          label = "C. Select the Depended Variable that you would like to predict:",
-          choices = depended_var_discrete_or_not(),
+          label = "C. Select the Dependent Variable that you would like to predict:",
+          choices = dependent_var_discrete_or_not(),
           options = pickerOptions(
             actionsBox = TRUE,
             liveSearch = TRUE,
@@ -1071,7 +1071,7 @@ if (interactive()) {
       shinyWidgets::updatePickerInput(
         session,
         "select_independent_variables",
-        label = "D. Please choose the Independed Variables:",
+        label = "D. Please choose the Independent Variables:",
         choices =colnames(removecolumn(values$train_dataset,list("ID", input$select_dependent_variable))),
         selected = NULL,
         options = pickerOptions(
@@ -1313,14 +1313,14 @@ if (interactive()) {
                                     "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
                                     "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
                                     "Would you like to save the first Model of the Dataset: ", input$select_train_dataset ,
-                                    " and the Depended Variable: ",input$select_dependent_variable ," ?"),
+                                    " and the Dependent Variable: ",input$select_dependent_variable ," ?"),
                      callbackR = function(x){
                        
                        if(x==TRUE){
                          
                          shinyalert(title = "The Regression Model has been saved succefully",
                                     text = paste0("The first Regression Model of the Dataset: ", input$select_train_dataset , 
-                                                  " with Depended Variable: ",input$select_dependent_variable, " just saved!"),
+                                                  " with Dependent Variable: ",input$select_dependent_variable, " just saved!"),
                                     type = "success",
                                     inputId = { 
                                       
@@ -1397,7 +1397,7 @@ if (interactive()) {
                        text = paste0("The New train RMSE (Best Score) is: ",round(values$result$best_score, 3), "\n",
                                      "The New test RMSE (Best Score) is: ", round(values$test_rmse, 3), "\n\n",
                                      "The Old train RMSE (Best Score) is: ", round(values$exist_model$best_score, 3), "\n",
-                                     "New Old test RMSE (Best Score) is: ", round(values$exists_model_test_RMSE, 3), "\n\n",
+                                     "The Old test RMSE (Best Score) is: ", round(values$exists_model_test_RMSE, 3), "\n\n",
                                      "The results came from the following configuration: \n\n",
                                      "NRounds(niter): ", values$bg_process$get_result()$niter, "\n",
                                      "NFold: ", values$bg_process$get_result()$params$nfold, "\n",
@@ -1407,7 +1407,7 @@ if (interactive()) {
                                      "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
                                      "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
                                      "The old Regression Model of the Dataset: ", input$select_train_dataset , 
-                                     " with Depended Variable: ",input$select_dependent_variable, " just replaced with the best one!"),
+                                     " with Dependent Variable: ",input$select_dependent_variable, " just replaced with the best one!"),
                        type = "success",
                        confirmButtonText = 'Ok')
             
@@ -1431,7 +1431,7 @@ if (interactive()) {
                                      "Colsample by tree: ", values$bg_process$get_result()$params$colsample_bytree, "\n",
                                      "Min child weight: ", values$bg_process$get_result()$params$min_child_weight, "\n\n",
                                      "Would you like to replace the old Regression Model with the new one of the Dataset: ", input$select_train_dataset , 
-                                     " with Depended Variable: ",input$select_dependent_variable," ?"),
+                                     " with Dependent Variable: ",input$select_dependent_variable," ?"),
                        type = "warning",
                        callbackR = function(x){
                          
@@ -1455,7 +1455,7 @@ if (interactive()) {
                            
                            shinyalert(title = "The New Regression Model have been replaced succefully",
                                       text = paste0("Just replaced the Regression Model of the Dataset: ", input$select_train_dataset , 
-                                                    " with Depended Variable: ",input$select_dependent_variable),
+                                                    " with Dependent Variable: ",input$select_dependent_variable),
                                       type = "success",
                                       confirmButtonText = 'Ok')
                            
