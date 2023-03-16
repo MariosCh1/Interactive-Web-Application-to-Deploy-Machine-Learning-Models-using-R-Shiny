@@ -347,7 +347,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
                     ),
                     br(),
                     fluidRow(
-                      column(9,sliderInput("max_depth_slider", "E3. Max_depth_weight:", min = 1, max = 50, step = 1, value = c(4, 11))),
+                      column(9,sliderInput("max_depth_slider", "E3. Max_depth:", min = 1, max = 50, step = 1, value = c(4, 11))),
                       column(3,numericInput("max_depth_step_input", "Step", min=1, max=50, step = 1 , value = 1))
                     ),
                     br(),
@@ -411,7 +411,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
     shinydashboard::tabItem(
       
       tabName = "ML_models_storage",
-      titlePanel("ML Models' Storage"),
+      titlePanel("ML Models Storage"),
       
       sidebarLayout(
         
