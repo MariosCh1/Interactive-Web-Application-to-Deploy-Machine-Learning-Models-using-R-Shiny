@@ -950,7 +950,7 @@ if (interactive()) {
       } else if(input$sidebar_menu == "ML_models_storage"){
         
         shinyjs::hide("BoxPredictionNewData")
-        shinyjs::disable("Predict")
+        #shinyjs::disable("Predict")
 
         
         values$choices_getModelTypes <- getModelTypes(session$userData$auth0_info$sub)
