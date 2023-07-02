@@ -1532,7 +1532,7 @@ if (interactive()) {
       
       shinyWidgets::updatePickerInput(session,
                                       "select_dataset_ML_model",
-                                      "B. Select the releted trained dataset:",
+                                      "B. Select the related trained dataset:",
                                       choices = values$choiches_of_select_dataset_ML_model$file_name,
                                       options = pickerOptions(actionsBox = FALSE, liveSearch = FALSE))
       
