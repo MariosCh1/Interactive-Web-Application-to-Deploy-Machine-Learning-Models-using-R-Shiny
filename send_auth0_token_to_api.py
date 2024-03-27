@@ -1,5 +1,6 @@
 import http.client
 import pandas as pd
+from io import StringIO
 
 
 conn = http.client.HTTPSConnection("mbads-thesis.eu.auth0.com")
@@ -15,7 +16,7 @@ conn.request("GET", "/api/v2/users", headers=headers)
 res = conn.getresponse()
 data = res.read()
 
-send_api = pd.DataFrame(pd.read_json(data.decode("utf-8")),index=[0])
+send_api = pd.DataFrame(pd.read_json(StringIO(data.decode("utf-8"))),index=[0])
 
 
 
