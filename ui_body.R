@@ -411,7 +411,7 @@ body <- shinydashboard::dashboardBody( useShinyjs(), # show/hide
     shinydashboard::tabItem(
       
       tabName = "ML_models_storage",
-      titlePanel("ML Models Storage"),
+      titlePanel("ML Models' Storage"),
       
       sidebarLayout(
         
