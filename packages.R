@@ -2,9 +2,9 @@ if(!("installr" %in% rownames(installed.packages()))){
   install.packages("installr")
 }
 
-if(!("Rtools42" %in% rownames(installed.packages()))){
-  install.packages("Rtools42")
-}
+# if(!("Rtools42" %in% rownames(installed.packages()))){
+#   install.packages("Rtools42")
+# }
 
 if(!("devtools" %in% rownames(installed.packages()))){
   install.packages("devtools")
@@ -127,9 +127,9 @@ if(!("ExPanDaR" %in% rownames(installed.packages()))){
   install.packages("ExPanDaR")
 }
 
-if(!("DataExplorer" %in% rownames(installed.packages()))){
-  install.packages("DataExplorer")
-}
+# if(!("DataExplorer" %in% rownames(installed.packages()))){
+#   install.packages("DataExplorer", force = TRUE)
+# }
 
 if(!("readxl" %in% rownames(installed.packages()))){
   install.packages("readxl")
