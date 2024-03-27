@@ -11,6 +11,9 @@ set.seed(100)
 options(shiny.port = 8080 #, shiny.maxRequestSize = 40 * 1024 ^ 2
         ,scipen = 999) #avoid num scientific format
 
+#----------PACKAGES & LIBRARIES-------------------------------------------------
+
+source("packages.R")
 
 
 #----------AUTH0----------------------------------------------------------------
@@ -28,10 +31,6 @@ a0_info <- auth0::auth0_info()
 #reticulate::py_install("pandas") #run one time on setup
 reticulate::source_python("ask_auth0_for_tokens_api.py")
 reticulate::source_python("send_auth0_token_to_api.py")
-
-#----------PACKAGES & LIBRARIES-------------------------------------------------
-
-source("packages.R")
 
 #----------DATABASE-------------------------------------------------------------
 
