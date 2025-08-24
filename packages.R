@@ -10,8 +10,8 @@ if(!("devtools" %in% rownames(installed.packages()))){
   install.packages("devtools")
 }
 
-if(!("boxuancui/DataExplorer" %in% rownames(installed.packages()))){
-    devtools::install_github("boxuancui/DataExplorer")
+if(!("DataExplorer" %in% rownames(installed.packages()))){
+  install.packages("DataExplorer")
 }
 
 if(!("shiny" %in% rownames(installed.packages()))){
@@ -216,6 +216,18 @@ if(!("DiagrammeR" %in% rownames(installed.packages()))){
   install.packages("DiagrammeR")
 }
 
+if(!reticulate::py_module_available("pandas")){
+  reticulate::py_install("pandas")
+}
+
+# if(!("sparklyr" %in% rownames(installed.packages()))){
+#   install.packages("sparklyr")
+# }
+# 
+# if(!("sparkxgb" %in% rownames(installed.packages()))){
+#   install.packages("sparkxgb")
+# }
+
 # if(!("latticeExtra" %in% rownames(installed.packages()))){
 #   install.packages("latticeExtra")
 # }
@@ -343,6 +355,8 @@ library(pastecs)
 library(retry)
 library(reshape2)
 library(DiagrammeR)
+# library(sparklyr)
+# library(sparkxgb)
 #library(devtools)
 #library(latticeExtra)
 #library(waiter)
