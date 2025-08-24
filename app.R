@@ -61,13 +61,47 @@ if (interactive()) {
   server <-  function(input, output, session) {
     
     #---------SET GLOBAL local_infile = true;-----------------------------------
+    
+    
     observe({
     set_global_local_infile()
     })
+    
+    
     #---------------------------------------------------------------------------
 
+    
     values <- reactiveValues()
     #values$stored_files <- NULL
+    
+    
+    #---------URI Routing-------------------------------------------------------
+    
+    
+    observeEvent(input$sidebar_menu, {
+      # http://127.0.0.1:6172/?tab=dashboard
+      # http://127.0.0.1:6172/?tab=widgets
+      clientData <- reactiveValuesToList(session$clientData)
+      newURL <- with(clientData, paste0(url_protocol, 
+                                        "//", 
+                                        url_hostname, 
+                                        ":", 
+                                        url_port, 
+                                        url_pathname, 
+                                        "?tab=", input$sidebar_menu))
+      updateQueryString(newURL, mode = "replace", session)
+      # updateQueryString(newURL, mode = "push", session)
+    })
+    
+    observe({
+      currentTab <- getQueryString(session)$tab # alternative: parseQueryString(session$clientData$url_search)$tab
+      if(!is.null(currentTab)){
+        updateTabItems(session, "sidebar_menu", selected = currentTab)
+      }
+    })
+    
+    #https://stackoverflow.com/questions/70080803/uri-routing-for-shinydashboard-using-shiny-router
+    
     
     #---------User Auth---------------------------------------------------------
     
